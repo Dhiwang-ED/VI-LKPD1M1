@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Pokemon: Petualangan Nilai Tempat</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            }
+        };
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka+One:wght@400&family=Nunito:wght@400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        
+        .header h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .pokemon-badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 25px;
+            margin: 10px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 25px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .section h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .pokemon-icon {
+            width: 40px;
+            height: 40px;
+            background: #ffeb3b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .interactive-box {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .place-value-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+            gap: 10px;
+            margin: 20px 0;
+        }
+        
+        .place-box {
+            background: linear-gradient(45deg, #4facfe, #00f2fe);
+            color: white;
+            padding: 15px 10px;
+            text-align: center;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        
+        .place-box:hover {
+            transform: scale(1.05);
+        }
+        
+        .number-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.2rem;
+            border: 3px solid #4facfe;
+            border-radius: 10px;
+            text-align: center;
+            margin: 10px 0;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .game-button {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+            font-family: 'Nunito', sans-serif;
+        }
+        
+        .game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .quiz-container {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .question {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 15px 0;
+            display: none;
+        }
+        
+        .question.active {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .option:hover {
+            background: #e9ecef;
+            border-color: #4facfe;
+        }
+        
+        .option.selected {
+            background: #4facfe;
+            color: white;
+            border-color: #4facfe;
+        }
+        
+        .option.correct {
+            background: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .option.wrong {
+            background: #dc3545;
+            color: white;
+            border-color: #dc3545;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(45deg, #28a745, #20c997);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .score-display {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .pokemon-reward {
+            text-align: center;
+            font-size: 3rem;
+            margin: 20px 0;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .comparison-game {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            gap: 20px;
+            align-items: center;
+            margin: 20px 0;
+        }
+        
+        .number-card {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-symbols {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .symbol-btn {
+            background: #feca57;
+            border: none;
+            padding: 15px 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .symbol-btn:hover {
+            background: #ff9ff3;
+            transform: scale(1.1);
+        }
+        
+        .feedback {
+            text-align: center;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-weight: bold;
+            display: none;
+        }
+        
+        .feedback.correct {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+        
+        .feedback.wrong {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎮 LKPD Pokemon: Petualangan Nilai Tempat 🎮</h1>
+            <div class="pokemon-badge">⚡ Trainer: Siswa Kelas 6 ⚡</div>
+            <div class="pokemon-badge">🎯 Misi: Menguasai Bilangan sampai 1.000.000 🎯</div>
+        </div>
+        
+        <div class="content">
+            <!-- Bagian 1: Pengenalan Nilai Tempat -->
+            <div class="section">
+                <h2><div class="pokemon-icon">⚡</div>Level 1: Memahami Nilai Tempat</h2>
+                <div class="interactive-box">
+                    <p><strong>Hai Pokemon Trainer!</strong> Mari kita mulai petualangan untuk memahami nilai tempat bilangan. Setiap digit dalam bilangan memiliki tempat dan nilai yang berbeda, seperti Pokemon yang memiliki level berbeda!</p>
+                    
+                    <div class="place-value-demo">
+                        <div class="place-box" onclick="explainPlace('ratusan_ribu')">Ratusan Ribu<br>100.000</div>
+                        <div class="place-box" onclick="explainPlace('puluhan_ribu')">Puluhan Ribu<br>10.000</div>
+                        <div class="place-box" onclick="explainPlace('ribuan')">Ribuan<br>1.000</div>
+                        <div class="place-box" onclick="explainPlace('ratusan')">Ratusan<br>100</div>
+                        <div class="place-box" onclick="explainPlace('puluhan')">Puluhan<br>10</div>
+                        <div class="place-box" onclick="explainPlace('satuan')">Satuan<br>1</div>
+                    </div>
+                    
+                    <div id="place-explanation" style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-radius: 10px; display: none;">
+                        <p id="explanation-text"></p>
+                    </div>
+                    
+                    <p><strong>Contoh:</strong> Bilangan 234.567</p>
+                    <p>$2 \times 100.000 + 3 \times 10.000 + 4 \times 1.000 + 5 \times 100 + 6 \times 10 + 7 \times 1$</p>
+                    <p>$= 200.000 + 30.000 + 4.000 + 500 + 60 + 7 = 234.567$</p>
+                </div>
+            </div>
+            
+            <!-- Bagian 2: Latihan Interaktif -->
+            <div class="section">
+                <h2><div class="pokemon-icon">🔥</div>Level 2: Latihan Nilai Tempat</h2>
+                <div class="interactive-box">
+                    <p><strong>Misi:</strong> Tentukan nilai tempat dari digit yang ditandai dalam bilangan berikut!</p>
+                    
+                    <div id="practice-area">
+                        <div style="text-align: center; margin: 20px 0;">
+                            <div style="font-size: 2rem; font-weight: bold; color: #667eea;" id="practice-number">456.789</div>
+                            <p>Tentukan nilai tempat digit <span id="target-digit" style="color: #ff6b6b; font-weight: bold;">5</span></p>
+                        </div>
+                        
+                        <div class="options" id="practice-options">
+                            <div class="option" onclick="checkPractice(this, false)">5.000</div>
+                            <div class="option" onclick="checkPractice(this, false)">500</div>
+                            <div class="option" onclick="checkPractice(this, true)">50.000</div>
+                            <div class="option" onclick="checkPractice(this, false)">5</div>
+                        </div>
+                        
+                        <div class="feedback" id="practice-feedback"></div>
+                        <button class="game-button" onclick="generateNewPractice()">🎮 Soal Baru</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bagian 3: Membandingkan Bilangan -->
+            <div class="section">
+                <h2><div class="pokemon-icon">⭐</div>Level 3: Membandingkan Bilangan</h2>
+                <div class="interactive-box">
+                    <p><strong>Misi:</strong> Bandingkan kedua bilangan berikut! Pilih simbol yang tepat.</p>
+                    
+                    <div class="comparison-game">
+                        <div class="number-card" id="num1">234.567</div>
+                        <div class="comparison-symbols">
+                            <button class="symbol-btn" onclick="compareNumbers('>')">&gt;</button>
+                            <button class="symbol-btn" onclick="compareNumbers('<')">&lt;</button>
+                            <button class="symbol-btn" onclick="compareNumbers('=')">=</button>
+                        </div>
+                        <div class="number-card" id="num2">234.576</div>
+                    </div>
+                    
+                    <div class="feedback" id="comparison-feedback"></div>
+                    <button class="game-button" onclick="generateNewComparison()">🎮 Soal Baru</button>
+                </div>
+            </div>
+            
+            <!-- Bagian 4: Mengurutkan Bilangan -->
+            <div class="section">
+                <h2><div class="pokemon-icon">🏆</div>Level 4: Mengurutkan Bilangan</h2>
+                <div class="interactive-box">
+                    <p><strong>Misi:</strong> Urutkan bilangan-bilangan berikut dari yang terkecil ke terbesar!</p>
+                    
+                    <div id="sorting-area">
+                        <div style="margin: 20px 0;">
+                            <p><strong>Bilangan yang harus diurutkan:</strong></p>
+                            <div id="numbers-to-sort" style="display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0;">
+                                <!-- Numbers will be generated here -->
+                            </div>
+                        </div>
+                        
+                        <div style="margin: 20px 0;">
+                            <p><strong>Urutan dari terkecil ke terbesar:</strong></p>
+                            <div id="sorted-area" style="min-height: 60px; border: 2px dashed #ccc; border-radius: 10px; padding: 15px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                                <span style="color: #999;">Seret bilangan ke sini...</span>
+                            </div>
+                        </div>
+                        
+                        <button class="game-button" onclick="checkSorting()">✅ Periksa Jawaban</button>
+                        <button class="game-button" onclick="generateNewSorting()">🎮 Soal Baru</button>
+                        <div class="feedback" id="sorting-feedback"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Bagian 5: Kuis Final -->
+            <div class="section quiz-container">
+                <h2><div class="pokemon-icon">👑</div>Boss Battle: Kuis Final</h2>
+                <div class="interactive-box">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quiz-progress"></div>
+                    </div>
+                    <div class="score-display">
+                        Skor: <span id="current-score">0</span>/10 ⭐
+                    </div>
+                    
+                    <div id="quiz-questions">
+                        <!-- Questions will be generated here -->
+                    </div>
+                    
+                    <div style="text-align: center; margin: 20px 0;">
+                        <button class="game-button" id="quiz-btn" onclick="startQuiz()">🚀 Mulai Kuis</button>
+                    </div>
+                    
+                    <div id="quiz-result" style="display: none; text-align: center;">
+                        <div class="pokemon-reward" id="reward-pokemon">🏆</div>
+                        <h3 id="result-title"></h3>
+                        <p id="result-message"></p>
+                        <button class="game-button" onclick="resetQuiz()">🔄 Coba Lagi</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let quizStarted = false;
+        let currentNumbers = [];
+        let correctOrder = [];
+        
+        // Quiz questions
+        const quizQuestions = [
+            {
+                question: "Nilai tempat digit 7 dalam bilangan 567.890 adalah...",
+                options: ["7.000", "70.000", "700", "7"],
+                correct: 0
+            },
+            {
+                question: "Bilangan 234.567 dibaca...",
+                options: ["Dua ratus tiga puluh empat ribu lima ratus enam puluh tujuh", "Dua ratus tiga puluh empat lima ratus enam puluh tujuh", "Dua tiga empat lima enam tujuh", "Dua ratus empat ribu lima ratus tujuh"],
+                correct: 0
+            },
+            {
+                question: "Manakah bilangan yang paling besar?",
+                options: ["456.789", "465.789", "456.798", "465.798"],
+                correct: 3
+            },
+            {
+                question: "Nilai tempat digit 3 dalam bilangan 123.456 adalah...",
+                options: ["3", "30", "300", "3.000"],
+                correct: 3
+            },
+            {
+                question: "Urutan bilangan dari terkecil ke terbesar: 234.567, 243.567, 234.576",
+                options: ["234.567, 234.576, 243.567", "234.576, 234.567, 243.567", "243.567, 234.576, 234.567", "234.567, 243.567, 234.576"],
+                correct: 0
+            },
+            {
+                question: "Bilangan 789.123 dalam bentuk penjumlahan adalah...",
+                options: ["700.000 + 80.000 + 9.000 + 100 + 20 + 3", "700.000 + 8.000 + 900 + 100 + 20 + 3", "70.000 + 8.000 + 900 + 100 + 20 + 3", "7.000 + 800 + 90 + 100 + 20 + 3"],
+                correct: 0
+            },
+            {
+                question: "Manakah perbandingan yang benar?",
+                options: ["345.678 > 354.678", "345.678 < 345.687", "345.678 = 345.687", "345.678 > 345.687"],
+                correct: 1
+            },
+            {
+                question: "Nilai tempat digit 9 dalam bilangan 912.345 adalah...",
+                options: ["9", "90", "900", "900.000"],
+                correct: 3
+            },
+            {
+                question: "Bilangan terbesar yang dapat dibentuk dari digit 1, 2, 3, 4, 5, 6 adalah...",
+                options: ["123.456", "654.321", "456.321", "321.654"],
+                correct: 1
+            },
+            {
+                question: "Jika Pikachu memiliki 456.789 poin dan Charizard memiliki 465.789 poin, siapa yang memiliki poin lebih banyak?",
+                options: ["Pikachu", "Charizard", "Sama", "Tidak dapat ditentukan"],
+                correct: 1
+            }
+        ];
+        
+        function explainPlace(place) {
+            const explanations = {
+                'ratusan_ribu': 'Tempat ratusan ribu bernilai 100.000. Jika digit di tempat ini adalah 3, maka nilainya 3 × 100.000 = 300.000',
+                'puluhan_ribu': 'Tempat puluhan ribu bernilai 10.000. Jika digit di tempat ini adalah 4, maka nilainya 4 × 10.000 = 40.000',
+                'ribuan': 'Tempat ribuan bernilai 1.000. Jika digit di tempat ini adalah 5, maka nilainya 5 × 1.000 = 5.000',
+                'ratusan': 'Tempat ratusan bernilai 100. Jika digit di tempat ini adalah 6, maka nilainya 6 × 100 = 600',
+                'puluhan': 'Tempat puluhan bernilai 10. Jika digit di tempat ini adalah 7, maka nilainya 7 × 10 = 70',
+                'satuan': 'Tempat satuan bernilai 1. Jika digit di tempat ini adalah 8, maka nilainya 8 × 1 = 8'
+            };
+            
+            document.getElementById('place-explanation').style.display = 'block';
+            document.getElementById('explanation-text').textContent = explanations[place];
+        }
+        
+        function generateNewPractice() {
+            const numbers = [
+                { num: '123.456', digit: '2', pos: 1, value: '20.000' },
+                { num: '789.123', digit: '7', pos: 0, value: '700.000' },
+                { num: '456.789', digit: '5', pos: 0, value: '400.000' },
+                { num: '234.567', digit: '3', pos: 1, value: '30.000' },
+                { num: '678.901', digit: '9', pos: 4, value: '900' }
+            ];
+            
+            const selected = numbers[Math.floor(Math.random() * numbers.length)];
+            document.getElementById('practice-number').textContent = selected.num;
+            document.getElementById('target-digit').textContent = selected.digit;
+            
+            // Generate options
+            const correctValue = selected.value;
+            const options = [correctValue];
+            
+            // Generate wrong options
+            const baseValue = parseInt(correctValue.replace(/\./g, ''));
+            options.push((baseValue * 10).toLocaleString('id-ID'));
+            options.push((baseValue / 10).toLocaleString('id-ID'));
+            options.push((baseValue / 100).toLocaleString('id-ID'));
+            
+            // Shuffle options
+            for (let i = options.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [options[i], options[j]] = [options[j], options[i]];
+            }
+            
+            const optionsContainer = document.getElementById('practice-options');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(option => {
+                const div = document.createElement('div');
+                div.className = 'option';
+                div.textContent = option;
+                div.onclick = () => checkPractice(div, option === correctValue);
+                optionsContainer.appendChild(div);
+            });
+            
+            document.getElementById('practice-feedback').style.display = 'none';
+        }
+        
+        function checkPractice(element, isCorrect) {
+            const feedback = document.getElementById('practice-feedback');
+            const options = document.querySelectorAll('#practice-options .option');
+            
+            options.forEach(opt => {
+                opt.style.pointerEvents = 'none';
+                if (opt === element) {
+                    opt.classList.add(isCorrect ? 'correct' : 'wrong');
+                }
+            });
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 Benar! Pokemon kamu naik level! ⚡';
+            } else {
+                feedback.className = 'feedback wrong';
+                feedback.textContent = '❌ Belum tepat. Coba perhatikan posisi digitnya lagi! 🤔';
+            }
+            
+            feedback.style.display = 'block';
+            
+            setTimeout(() => {
+                options.forEach(opt => {
+                    opt.style.pointerEvents = 'auto';
+                    opt.classList.remove('correct', 'wrong');
+                });
+            }, 2000);
+        }
+        
+        function generateNewComparison() {
+            const num1 = Math.floor(Math.random() * 900000) + 100000;
+            const num2 = Math.floor(Math.random() * 900000) + 100000;
+            
+            document.getElementById('num1').textContent = num1.toLocaleString('id-ID');
+            document.getElementById('num2').textContent = num2.toLocaleString('id-ID');
+            document.getElementById('comparison-feedback').style.display = 'none';
+            
+            // Store for comparison
+            window.comparisonNumbers = { num1, num2 };
+        }
+        
+        function compareNumbers(symbol) {
+            const { num1, num2 } = window.comparisonNumbers;
+            const feedback = document.getElementById('comparison-feedback');
+            
+            let correct = false;
+            if (symbol === '>' && num1 > num2) correct = true;
+            if (symbol === '<' && num1 < num2) correct = true;
+            if (symbol === '=' && num1 === num2) correct = true;
+            
+            if (correct) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 Benar! Kamu berhasil menangkap Pokemon! ⚡';
+            } else {
+                feedback.className = 'feedback wrong';
+                feedback.textContent = '❌ Belum tepat. Pokemon kabur! Coba lagi! 🏃‍♂️';
+            }
+            
+            feedback.style.display = 'block';
+        }
+        
+        function generateNewSorting() {
+            const numbers = [];
+            for (let i = 0; i < 4; i++) {
+                numbers.push(Math.floor(Math.random() * 900000) + 100000);
+            }
+            
+            currentNumbers = [...numbers];
+            correctOrder = [...numbers].sort((a, b) => a - b);
+            
+            const container = document.getElementById('numbers-to-sort');
+            container.innerHTML = '';
+            
+            // Shuffle for display
+            const shuffled = [...numbers].sort(() => Math.random() - 0.5);
+            
+            shuffled.forEach(num => {
+                const div = document.createElement('div');
+                div.className = 'number-card';
+                div.textContent = num.toLocaleString('id-ID');
+                div.draggable = true;
+                div.style.cursor = 'grab';
+                div.style.margin = '5px';
+                div.style.padding = '15px 20px';
+                div.style.fontSize = '1.1rem';
+                
+                div.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.setData('text/plain', num);
+                    div.style.opacity = '0.5';
+                });
+                
+                div.addEventListener('dragend', () => {
+                    div.style.opacity = '1';
+                });
+                
+                container.appendChild(div);
+            });
+            
+            // Setup drop area
+            const sortedArea = document.getElementById('sorted-area');
+            sortedArea.innerHTML = '<span style="color: #999;">Seret bilangan ke sini...</span>';
+            sortedArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                sortedArea.style.background = '#e3f2fd';
+            });
+            
+            sortedArea.addEventListener('dragleave', () => {
+                sortedArea.style.background = '';
+            });
+            
+            sortedArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const num = parseInt(e.dataTransfer.getData('text/plain'));
+                
+                if (sortedArea.children.length === 1 && sortedArea.children[0].tagName === 'SPAN') {
+                    sortedArea.innerHTML = '';
+                }
+                
+                const div = document.createElement('div');
+                div.className = 'number-card';
+                div.textContent = num.toLocaleString('id-ID');
+                div.style.margin = '5px';
+                div.style.padding = '10px 15px';
+                div.style.fontSize = '1rem';
+                div.dataset.value = num;
+                
+                sortedArea.appendChild(div);
+                sortedArea.style.background = '';
+                
+                // Remove from original container
+                const originalCards = document.querySelectorAll('#numbers-to-sort .number-card');
+                originalCards.forEach(card => {
+                    if (parseInt(card.textContent.replace(/\./g, '')) === num) {
+                        card.remove();
+                    }
+                });
+            });
+            
+            document.getElementById('sorting-feedback').style.display = 'none';
+        }
+        
+        function checkSorting() {
+            const sortedArea = document.getElementById('sorted-area');
+            const cards = sortedArea.querySelectorAll('.number-card');
+            const feedback = document.getElementById('sorting-feedback');
+            
+            if (cards.length !== correctOrder.length) {
+                feedback.className = 'feedback wrong';
+                feedback.textContent = '❌ Belum semua bilangan diurutkan! Lengkapi dulu! 📝';
+                feedback.style.display = 'block';
+                return;
+            }
+            
+            const userOrder = Array.from(cards).map(card => parseInt(card.dataset.value));
+            const isCorrect = JSON.stringify(userOrder) === JSON.stringify(correctOrder);
+            
+            if (isCorrect) {
+                feedback.className = 'feedback correct';
+                feedback.textContent = '🎉 Sempurna! Kamu berhasil mengurutkan bilangan dengan benar! 🏆';
+            } else {
+                feedback.className = 'feedback wrong';
+                feedback.textContent = '❌ Urutan belum tepat. Perhatikan nilai setiap bilangan! 🤔';
+            }
+            
+            feedback.style.display = 'block';
+        }
+        
+        function startQuiz() {
+            quizStarted = true;
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            document.getElementById('quiz-btn').style.display = 'none';
+            document.getElementById('quiz-result').style.display = 'none';
+            
+            showQuestion();
+        }
+        
+        function showQuestion() {
+            const container = document.getElementById('quiz-questions');
+            const question = quizQuestions[currentQuestionIndex];
+            
+            container.innerHTML = `
+                <div class="question active">
+                    <h3>Soal ${currentQuestionIndex + 1}/10</h3>
+                    <p style="font-size: 1.1rem; margin: 15px 0;">${question.question}</p>
+                    <div class="options">
+                        ${question.options.map((option, index) => 
+                            `<div class="option" onclick="selectAnswer(${index})">${option}</div>`
+                        ).join('')}
+                    </div>
+                </div>
+            `;
+            
+            updateProgress();
+        }
+        
+        function selectAnswer(selectedIndex) {
+            const question = quizQuestions[currentQuestionIndex];
+            const options = document.querySelectorAll('.question.active .option');
+            
+            options.forEach((option, index) => {
+                option.style.pointerEvents = 'none';
+                if (index === selectedIndex) {
+                    option.classList.add(index === question.correct ? 'correct' : 'wrong');
+                } else if (index === question.correct) {
+                    option.classList.add('correct');
+                }
+            });
+            
+            if (selectedIndex === question.correct) {
+                score++;
+            }
+            
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < quizQuestions.length) {
+                    showQuestion();
+                } else {
+                    showResult();
+                }
+            }, 1500);
+        }
+        
+        function updateProgress() {
+            const progress = (currentQuestionIndex / quizQuestions.length) * 100;
+            document.getElementById('quiz-progress').style.width = progress + '%';
+            document.getElementById('current-score').textContent = score;
+        }
+        
+        function showResult() {
+            document.getElementById('quiz-questions').innerHTML = '';
+            document.getElementById('quiz-result').style.display = 'block';
+            
+            const percentage = (score / quizQuestions.length) * 100;
+            let title, message, pokemon;
+            
+            if (percentage >= 90) {
+                title = '🏆 Pokemon Master!';
+                message = `Luar biasa! Kamu mendapat ${score}/10! Kamu sudah menguasai nilai tempat dengan sempurna!`;
+                pokemon = '👑';
+            } else if (percentage >= 70) {
+                title = '⭐ Pokemon Trainer!';
+                message = `Bagus! Kamu mendapat ${score}/10! Terus berlatih untuk menjadi master!`;
+                pokemon = '⚡';
+            } else if (percentage >= 50) {
+                title = '🎮 Pokemon Rookie!';
+                message = `Tidak buruk! Kamu mendapat ${score}/10! Masih perlu latihan lagi!`;
+                pokemon = '🔥';
+            } else {
+                title = '📚 Keep Learning!';
+                message = `Kamu mendapat ${score}/10. Jangan menyerah! Belajar lagi dan coba lagi!`;
+                pokemon = '💪';
+            }
+            
+            document.getElementById('result-title').textContent = title;
+            document.getElementById('result-message').textContent = message;
+            document.getElementById('reward-pokemon').textContent = pokemon;
+        }
+        
+        function resetQuiz() {
+            quizStarted = false;
+            currentQuestionIndex = 0;
+            score = 0;
+            
+            document.getElementById('quiz-btn').style.display = 'inline-block';
+            document.getElementById('quiz-result').style.display = 'none';
+            document.getElementById('quiz-questions').innerHTML = '';
+            document.getElementById('quiz-progress').style.width = '0%';
+            document.getElementById('current-score').textContent = '0';
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            generateNewPractice();
+            generateNewComparison();
+            generateNewSorting();
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9638554822cfea7b',t:'MTc1MzI0Mzg4MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
