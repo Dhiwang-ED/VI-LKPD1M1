@@ -1,0 +1,1941 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LKPD Pokemon: Penjumlahan dan Pengurangan Bilangan Cacah</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pokemon: {
+                            yellow: '#FFCB05',
+                            blue: '#3C5AA6',
+                            red: '#FF1A1A',
+                            green: '#4CAF50'
+                        }
+                    },
+                    fontFamily: {
+                        pokemon: ['Poppins', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 45px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pokemon-gradient {
+            background: linear-gradient(135deg, #FFCB05 0%, #3C5AA6 100%);
+        }
+        
+        .math-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        
+        .math-line {
+            border-bottom: 3px solid #3C5AA6;
+            margin: 8px 0;
+            width: 100%;
+        }
+        
+        .pokemon-btn {
+            background: linear-gradient(135deg, #FFCB05 0%, #FFA000 100%);
+            color: #3C5AA6;
+            font-weight: 700;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 203, 5, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .pokemon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 203, 5, 0.6);
+            background: linear-gradient(135deg, #3C5AA6 0%, #1976D2 100%);
+            color: #FFCB05;
+        }
+        
+        .pokemon-sprite {
+            width: 100px;
+            height: 100px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+        }
+        
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .success-animation {
+            animation: bounce 0.6s ease-in-out;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+            40%, 43% { transform: translate3d(0,-30px,0); }
+            70% { transform: translate3d(0,-15px,0); }
+            90% { transform: translate3d(0,-4px,0); }
+        }
+        
+        .interactive-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            margin: 20px 0;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        .step-card {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 5px solid #2196F3;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+        }
+        
+        .example-card {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            border: 2px solid #9c27b0;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            box-shadow: 0 8px 25px rgba(156, 39, 176, 0.2);
+        }
+        
+        .input-field {
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+        }
+        
+        .input-field:focus {
+            border-color: #3C5AA6;
+            box-shadow: 0 0 0 3px rgba(60, 90, 166, 0.1);
+            outline: none;
+        }
+        
+        .correct-answer {
+            background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+            border-color: #28a745;
+            color: #155724;
+        }
+        
+        .wrong-answer {
+            background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        
+        .section-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px 15px 0 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .section-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            animation: shine 3s infinite;
+        }
+        
+        @keyframes shine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        .progress-bar {
+            background: #e2e8f0;
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        
+        .progress-fill {
+            background: linear-gradient(90deg, #4CAF50 0%, #8BC34A 100%);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <!-- Header -->
+        <div class="glass-card rounded-2xl mb-8 overflow-hidden">
+            <div class="pokemon-gradient p-8 text-white text-center relative">
+                <div class="absolute inset-0 bg-black opacity-10"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-center mb-4">
+                        <i class="fas fa-bolt text-4xl mr-4"></i>
+                        <h1 class="text-4xl font-bold">LKPD Pokemon</h1>
+                        <i class="fas fa-bolt text-4xl ml-4"></i>
+                    </div>
+                    <h2 class="text-2xl font-semibold">Penjumlahan dan Pengurangan Bilangan Cacah</h2>
+                    <p class="text-lg mt-2 opacity-90">Sampai 1.000.000</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Introduction -->
+        <div class="glass-card rounded-2xl mb-8 p-8">
+            <div class="flex flex-col lg:flex-row items-center">
+                <div class="floating mb-6 lg:mb-0 lg:mr-8">
+                    <svg class="pokemon-sprite" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                        <ellipse cx="50" cy="55" rx="40" ry="35" fill="#FFF176"/>
+                        <path d="M30 35 L20 15" stroke="#FFF176" stroke-width="10" stroke-linecap="round"/>
+                        <path d="M70 35 L80 15" stroke="#FFF176" stroke-width="10" stroke-linecap="round"/>
+                        <path d="M30 35 L20 15" stroke="#A1887F" stroke-width="5" stroke-linecap="round"/>
+                        <path d="M70 35 L80 15" stroke="#A1887F" stroke-width="5" stroke-linecap="round"/>
+                        <circle cx="35" cy="45" r="8" fill="#000"/>
+                        <circle cx="65" cy="45" r="8" fill="#000"/>
+                        <circle cx="35" cy="45" r="3" fill="#fff"/>
+                        <circle cx="65" cy="45" r="3" fill="#fff"/>
+                        <path d="M35 70 Q50 80 65 70" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M50 55 L50 65" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round"/>
+                    </svg>
+                </div>
+                <div class="text-center lg:text-left">
+                    <h3 class="text-3xl font-bold text-pokemon-blue mb-4">Halo Pelatih Pokemon!</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Selamat datang di petualangan matematika Pokemon! Hari ini kamu akan belajar tentang 
+                        <span class="font-bold text-pokemon-red">penjumlahan dan pengurangan bilangan cacah sampai 1.000.000</span>. 
+                        Pikachu dan teman-temannya akan membantumu menguasai operasi hitung dengan cara yang seru!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Learning Objectives -->
+        <div class="glass-card rounded-2xl mb-8 overflow-hidden">
+            <div class="section-header">
+                <h3 class="text-2xl font-bold">
+                    <i class="fas fa-target mr-3"></i>Tujuan Pembelajaran
+                </h3>
+            </div>
+            <div class="p-8">
+                <p class="text-lg text-gray-700 mb-4">Setelah menyelesaikan LKPD ini, kamu akan mampu:</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl border-2 border-green-200">
+                        <i class="fas fa-plus-circle text-4xl text-green-600 mb-3"></i>
+                        <p class="font-semibold text-green-800">Melakukan penjumlahan bilangan cacah sampai 1.000.000</p>
+                    </div>
+                    <div class="text-center p-6 bg-gradient-to-br from-red-50 to-red-100 rounded-xl border-2 border-red-200">
+                        <i class="fas fa-minus-circle text-4xl text-red-600 mb-3"></i>
+                        <p class="font-semibold text-red-800">Melakukan pengurangan bilangan cacah sampai 1.000.000</p>
+                    </div>
+                    <div class="text-center p-6 bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl border-2 border-purple-200">
+                        <i class="fas fa-book-open text-4xl text-purple-600 mb-3"></i>
+                        <p class="font-semibold text-purple-800">Menyelesaikan soal cerita matematika</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Addition Section -->
+        <div class="glass-card rounded-2xl mb-8 overflow-hidden">
+            <div class="section-header bg-gradient-to-r from-green-500 to-green-600">
+                <h3 class="text-2xl font-bold">
+                    <i class="fas fa-plus mr-3"></i>Kegiatan 1: Penjumlahan Bilangan Cacah
+                </h3>
+            </div>
+            <div class="p-8">
+                <div class="flex flex-col lg:flex-row items-center mb-8">
+                    <div class="floating mb-6 lg:mb-0 lg:mr-8">
+                        <svg class="pokemon-sprite" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <ellipse cx="50" cy="65" rx="30" ry="25" fill="#81C784"/>
+                            <circle cx="50" cy="45" r="25" fill="#81C784"/>
+                            <path d="M50 20 Q65 5 80 20" fill="#81C784" stroke="#388E3C" stroke-width="2"/>
+                            <circle cx="80" cy="20" r="10" fill="#81C784" stroke="#388E3C" stroke-width="2"/>
+                            <circle cx="40" cy="45" r="6" fill="#000"/>
+                            <circle cx="60" cy="45" r="6" fill="#000"/>
+                            <circle cx="40" cy="45" r="2" fill="#fff"/>
+                            <circle cx="60" cy="45" r="2" fill="#fff"/>
+                            <path d="M45 60 Q50 65 55 60" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-green-700 mb-3">Bulbasaur's Addition Technique</h4>
+                        <p class="text-lg text-gray-700">Bulbasaur akan mengajarkan cara menjumlahkan bilangan besar dengan teknik menyimpan (carry over)!</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h4 class="text-xl font-bold text-blue-800 mb-4">
+                        <i class="fas fa-list-ol mr-2"></i>Langkah-langkah Penjumlahan:
+                    </h4>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">1.</span>
+                            <span>Susun bilangan secara vertikal (satuan di bawah satuan, puluhan di bawah puluhan, dst.)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">2.</span>
+                            <span>Mulai penjumlahan dari kolom satuan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">3.</span>
+                            <span>Jika hasil penjumlahan ≥ 10, tulis angka satuannya dan simpan puluhannya</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">4.</span>
+                            <span>Lanjutkan ke kolom berikutnya dan tambahkan angka yang disimpan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">5.</span>
+                            <span>Ulangi sampai semua kolom selesai</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="example-card">
+                    <h4 class="text-xl font-bold text-purple-800 mb-4 text-center">
+                        <i class="fas fa-calculator mr-2"></i>Contoh: 234.567 + 189.456
+                    </h4>
+                    <div class="math-display max-w-md mx-auto">
+                        <div class="text-right space-y-1 font-mono">
+                            <div style="display: inline-block; width: 140px; text-align: right;">234.567 &nbsp;</div>
+                            <div>
+                                <span style="display: inline-block; width: 120px; text-align: right;">189.456</span>
+                                <span class="text-green-600 ml-2">+</span>
+                            </div>
+                            <div class="math-line"></div>
+                            <div style="display: inline-block; width: 140px; text-align: right;" class="text-green-700 font-bold">424.023 &nbsp;</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button id="showAdditionSimulation" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-all">
+                            <i class="fas fa-play mr-2"></i>Lihat Simulasi Step by Step
+                        </button>
+                    </div>
+                    
+                    <div id="additionSimulation" class="hidden mt-6 bg-white p-6 rounded-lg border-2 border-purple-200">
+                        <h5 class="font-bold text-purple-800 mb-4 text-center">Simulasi Penjumlahan Bersusun</h5>
+                        <div class="max-w-md mx-auto">
+                            <div id="additionSteps" class="math-display text-lg">
+                                <!-- Steps will be populated by JavaScript -->
+                            </div>
+                            <div class="mt-4 text-center">
+                                <button id="nextAdditionStep" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all mr-2">
+                                    <i class="fas fa-forward mr-2"></i>Langkah Berikutnya
+                                </button>
+                                <button id="resetAdditionSim" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all">
+                                    <i class="fas fa-redo mr-2"></i>Ulang
+                                </button>
+                            </div>
+                            <div id="additionExplanation" class="mt-4 p-3 bg-blue-50 rounded-lg text-center text-blue-800 font-semibold">
+                                Klik "Langkah Berikutnya" untuk memulai simulasi
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 bg-white p-4 rounded-lg border-2 border-purple-200">
+                        <h5 class="font-bold text-purple-800 mb-2">Penjelasan Step by Step:</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p><strong>Satuan:</strong> 7 + 6 = 13 → tulis 3, simpan 1</p>
+                                <p><strong>Puluhan:</strong> 6 + 5 + 1 = 12 → tulis 2, simpan 1</p>
+                                <p><strong>Ratusan:</strong> 5 + 4 + 1 = 10 → tulis 0, simpan 1</p>
+                            </div>
+                            <div>
+                                <p><strong>Ribuan:</strong> 4 + 9 + 1 = 14 → tulis 4, simpan 1</p>
+                                <p><strong>Puluhan ribu:</strong> 3 + 8 + 1 = 12 → tulis 2, simpan 1</p>
+                                <p><strong>Ratusan ribu:</strong> 2 + 1 + 1 = 4 → tulis 4</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Addition Practice -->
+                <div class="interactive-card">
+                    <h4 class="text-2xl font-bold text-center mb-6 text-pokemon-blue">
+                        <i class="fas fa-gamepad mr-3"></i>Latihan Interaktif Penjumlahan
+                    </h4>
+                    <div class="text-center mb-6">
+                        <button id="generateAddition" class="pokemon-btn">
+                            <i class="fas fa-dice mr-2"></i>Lempar Pokeball untuk Soal Baru!
+                        </button>
+                    </div>
+                    
+                    <div id="additionGame" class="hidden">
+                        <!-- Problem Display -->
+                        <div class="max-w-md mx-auto mb-6">
+                            <div id="additionProblem" class="math-display"></div>
+                        </div>
+
+                        <!-- Step-by-step calculation area -->
+                        <div id="additionStepArea" class="hidden bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl border-2 border-green-200 mb-6">
+                            <h5 class="text-lg font-bold text-green-800 mb-4 text-center">
+                                <i class="fas fa-calculator mr-2"></i>Area Kerja Step-by-Step
+                            </h5>
+                            
+                            <!-- Carry storage area -->
+                            <div class="bg-yellow-100 p-3 rounded-lg mb-4">
+                                <div class="text-center mb-2">
+                                    <span class="font-bold text-yellow-800">Tempat Menyimpan (Carry):</span>
+                                </div>
+                                <div class="grid grid-cols-6 gap-2 max-w-md mx-auto">
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Rat.Ribu</label>
+                                        <input type="text" id="carry5" class="w-full p-1 text-center border rounded text-sm bg-yellow-50" maxlength="1" readonly>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Pul.Ribu</label>
+                                        <input type="text" id="carry4" class="w-full p-1 text-center border rounded text-sm bg-yellow-50" maxlength="1" readonly>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Ribuan</label>
+                                        <input type="text" id="carry3" class="w-full p-1 text-center border rounded text-sm bg-yellow-50" maxlength="1" readonly>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Ratusan</label>
+                                        <input type="text" id="carry2" class="w-full p-1 text-center border rounded text-sm bg-yellow-50" maxlength="1" readonly>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Puluhan</label>
+                                        <input type="text" id="carry1" class="w-full p-1 text-center border rounded text-sm bg-yellow-50" maxlength="1" readonly>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Satuan</label>
+                                        <input type="text" id="carry0" class="w-full p-1 text-center border rounded text-sm bg-yellow-50" maxlength="1" readonly>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step result display -->
+                            <div class="bg-green-50 p-3 rounded-lg mb-4">
+                                <div class="text-center mb-2">
+                                    <span class="font-bold text-green-800">Hasil yang Sedang Dibangun:</span>
+                                </div>
+                                <div id="buildingResult" class="math-display text-lg max-w-xs mx-auto">
+                                    <div class="text-right space-y-1 font-mono">
+                                        <div style="display: inline-block; width: 120px; text-align: right;" id="addNum1Display">--- &nbsp;</div>
+                                        <div>
+                                            <span style="display: inline-block; width: 100px; text-align: right;" id="addNum2Display">---</span>
+                                            <span class="text-green-600 ml-2">+</span>
+                                        </div>
+                                        <div class="math-line"></div>
+                                        <div style="display: inline-block; width: 120px; text-align: right;" class="text-green-700 font-bold" id="stepResult">______ &nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step calculation area -->
+                            <div class="bg-white p-4 rounded-lg border-2 border-green-300">
+                                <div id="currentStep" class="text-center mb-4">
+                                    <span class="font-bold text-green-800">Langkah 1: Hitung Satuan</span>
+                                </div>
+                                
+                                <div id="stepCalculation" class="text-center mb-4">
+                                    <!-- Dynamic step content will be inserted here -->
+                                </div>
+                                
+                                <div class="text-center">
+                                    <input type="text" id="stepAnswer" class="w-20 p-2 text-center border-2 border-green-300 rounded-lg text-lg font-bold" maxlength="2" placeholder="?">
+                                    <button id="checkStep" class="ml-3 bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all">
+                                        <i class="fas fa-check mr-1"></i>Cek
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick answer mode -->
+                        <div id="quickAnswerArea" class="max-w-md mx-auto mb-6">
+                            <div class="text-center mb-4">
+                                <button id="toggleMode" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+                                    <i class="fas fa-exchange-alt mr-2"></i>Mode Kerja Step-by-Step
+                                </button>
+                            </div>
+                            <input type="text" id="additionAnswer" class="input-field w-full" placeholder="Masukkan jawaban langsung...">
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <button id="checkAddition" class="pokemon-btn mr-3">
+                                <i class="fas fa-check mr-2"></i>Periksa Jawaban
+                            </button>
+                            <button id="newAddition" class="bg-gray-500 text-white px-6 py-3 rounded-full hover:bg-gray-600 transition-all">
+                                <i class="fas fa-redo mr-2"></i>Soal Baru
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <div class="progress-bar max-w-md mx-auto">
+                                <div id="additionProgress" class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Progress: <span id="additionCount">0</span>/5 soal</p>
+                        </div>
+                        
+                        <div id="additionFeedback" class="max-w-2xl mx-auto hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subtraction Section -->
+        <div class="glass-card rounded-2xl mb-8 overflow-hidden">
+            <div class="section-header bg-gradient-to-r from-red-500 to-red-600">
+                <h3 class="text-2xl font-bold">
+                    <i class="fas fa-minus mr-3"></i>Kegiatan 2: Pengurangan Bilangan Cacah
+                </h3>
+            </div>
+            <div class="p-8">
+                <div class="flex flex-col lg:flex-row items-center mb-8">
+                    <div class="floating mb-6 lg:mb-0 lg:mr-8">
+                        <svg class="pokemon-sprite" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <ellipse cx="50" cy="65" rx="25" ry="30" fill="#FF8A65"/>
+                            <circle cx="50" cy="35" r="20" fill="#FFAB91"/>
+                            <path d="M50 5 Q60 15 70 5" fill="#FF5722" stroke="#E64A19" stroke-width="2"/>
+                            <circle cx="40" cy="30" r="5" fill="#000"/>
+                            <circle cx="60" cy="30" r="5" fill="#000"/>
+                            <circle cx="40" cy="30" r="2" fill="#fff"/>
+                            <circle cx="60" cy="30" r="2" fill="#fff"/>
+                            <path d="M45 40 Q50 45 55 40" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M70 65 Q90 55 85 35" fill="none" stroke="#FF5722" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-red-700 mb-3">Charmander's Subtraction Technique</h4>
+                        <p class="text-lg text-gray-700">Charmander akan mengajarkan cara mengurangkan bilangan besar dengan teknik meminjam (borrowing)!</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h4 class="text-xl font-bold text-blue-800 mb-4">
+                        <i class="fas fa-list-ol mr-2"></i>Langkah-langkah Pengurangan:
+                    </h4>
+                    <ol class="list-decimal list-inside space-y-3 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">1.</span>
+                            <span>Susun bilangan secara vertikal (bilangan yang dikurangi di atas)</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">2.</span>
+                            <span>Mulai pengurangan dari kolom satuan</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">3.</span>
+                            <span>Jika angka atas < angka bawah, pinjam 1 dari kolom sebelah kiri</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">4.</span>
+                            <span>Kurangi 1 dari kolom yang dipinjam, tambahkan 10 ke kolom yang meminjam</span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="font-semibold mr-2">5.</span>
+                            <span>Lanjutkan sampai semua kolom selesai</span>
+                        </li>
+                    </ol>
+                </div>
+
+                <div class="example-card">
+                    <h4 class="text-xl font-bold text-purple-800 mb-4 text-center">
+                        <i class="fas fa-calculator mr-2"></i>Contoh: 500.000 - 234.567
+                    </h4>
+                    <div class="math-display max-w-md mx-auto">
+                        <div class="text-right space-y-1 font-mono">
+                            <div style="display: inline-block; width: 140px; text-align: right;">500.000 &nbsp;</div>
+                            <div>
+                                <span style="display: inline-block; width: 120px; text-align: right;">234.567</span>
+                                <span class="text-red-600 ml-2">-</span>
+                            </div>
+                            <div class="math-line"></div>
+                            <div style="display: inline-block; width: 140px; text-align: right;" class="text-red-700 font-bold">265.433 &nbsp;</div>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center mt-4">
+                        <button id="showSubtractionSimulation" class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-all">
+                            <i class="fas fa-play mr-2"></i>Lihat Simulasi Step by Step
+                        </button>
+                    </div>
+                    
+                    <div id="subtractionSimulation" class="hidden mt-6 bg-white p-6 rounded-lg border-2 border-purple-200">
+                        <h5 class="font-bold text-purple-800 mb-4 text-center">Simulasi Pengurangan Bersusun</h5>
+                        <div class="max-w-md mx-auto">
+                            <div id="subtractionSteps" class="math-display text-lg">
+                                <!-- Steps will be populated by JavaScript -->
+                            </div>
+                            <div class="mt-4 text-center">
+                                <button id="nextSubtractionStep" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-all mr-2">
+                                    <i class="fas fa-forward mr-2"></i>Langkah Berikutnya
+                                </button>
+                                <button id="resetSubtractionSim" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all">
+                                    <i class="fas fa-redo mr-2"></i>Ulang
+                                </button>
+                            </div>
+                            <div id="subtractionExplanation" class="mt-4 p-3 bg-blue-50 rounded-lg text-center text-blue-800 font-semibold">
+                                Klik "Langkah Berikutnya" untuk memulai simulasi
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-6 bg-white p-4 rounded-lg border-2 border-purple-200">
+                        <h5 class="font-bold text-purple-800 mb-2">Penjelasan Step by Step:</h5>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p><strong>Satuan:</strong> 0 < 7, pinjam → 10 - 7 = 3</p>
+                                <p><strong>Puluhan:</strong> 0 - 1 < 6, pinjam → 9 - 6 = 3</p>
+                                <p><strong>Ratusan:</strong> 0 - 1 < 5, pinjam → 9 - 5 = 4</p>
+                            </div>
+                            <div>
+                                <p><strong>Ribuan:</strong> 0 - 1 < 4, pinjam → 9 - 4 = 5</p>
+                                <p><strong>Puluhan ribu:</strong> 0 - 1 < 3, pinjam → 9 - 3 = 6</p>
+                                <p><strong>Ratusan ribu:</strong> 5 - 1 - 2 = 2</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Subtraction Practice -->
+                <div class="interactive-card">
+                    <h4 class="text-2xl font-bold text-center mb-6 text-pokemon-blue">
+                        <i class="fas fa-gamepad mr-3"></i>Latihan Interaktif Pengurangan
+                    </h4>
+                    <div class="text-center mb-6">
+                        <button id="generateSubtraction" class="pokemon-btn">
+                            <i class="fas fa-dice mr-2"></i>Lempar Pokeball untuk Soal Baru!
+                        </button>
+                    </div>
+                    
+                    <div id="subtractionGame" class="hidden">
+                        <!-- Problem Display -->
+                        <div class="max-w-md mx-auto mb-6">
+                            <div id="subtractionProblem" class="math-display"></div>
+                        </div>
+
+                        <!-- Step-by-step calculation area -->
+                        <div id="subtractionStepArea" class="hidden bg-gradient-to-br from-red-50 to-red-100 p-6 rounded-xl border-2 border-red-200 mb-6">
+                            <h5 class="text-lg font-bold text-red-800 mb-4 text-center">
+                                <i class="fas fa-calculator mr-2"></i>Area Kerja Step-by-Step
+                            </h5>
+                            
+                            <!-- Borrowing comparison area -->
+                            <div class="bg-blue-100 p-3 rounded-lg mb-4">
+                                <div class="text-center mb-2">
+                                    <span class="font-bold text-blue-800">Perbandingan & Peminjaman:</span>
+                                </div>
+                                <div class="grid grid-cols-6 gap-2 max-w-md mx-auto">
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Rat.Ribu</label>
+                                        <div class="bg-white p-1 rounded border text-sm">
+                                            <div id="topDigit5" class="font-bold text-blue-600">-</div>
+                                            <div class="text-xs text-gray-500">vs</div>
+                                            <div id="bottomDigit5" class="font-bold text-red-600">-</div>
+                                        </div>
+                                        <div id="borrowStatus5" class="text-xs mt-1 text-gray-600">-</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Pul.Ribu</label>
+                                        <div class="bg-white p-1 rounded border text-sm">
+                                            <div id="topDigit4" class="font-bold text-blue-600">-</div>
+                                            <div class="text-xs text-gray-500">vs</div>
+                                            <div id="bottomDigit4" class="font-bold text-red-600">-</div>
+                                        </div>
+                                        <div id="borrowStatus4" class="text-xs mt-1 text-gray-600">-</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Ribuan</label>
+                                        <div class="bg-white p-1 rounded border text-sm">
+                                            <div id="topDigit3" class="font-bold text-blue-600">-</div>
+                                            <div class="text-xs text-gray-500">vs</div>
+                                            <div id="bottomDigit3" class="font-bold text-red-600">-</div>
+                                        </div>
+                                        <div id="borrowStatus3" class="text-xs mt-1 text-gray-600">-</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Ratusan</label>
+                                        <div class="bg-white p-1 rounded border text-sm">
+                                            <div id="topDigit2" class="font-bold text-blue-600">-</div>
+                                            <div class="text-xs text-gray-500">vs</div>
+                                            <div id="bottomDigit2" class="font-bold text-red-600">-</div>
+                                        </div>
+                                        <div id="borrowStatus2" class="text-xs mt-1 text-gray-600">-</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Puluhan</label>
+                                        <div class="bg-white p-1 rounded border text-sm">
+                                            <div id="topDigit1" class="font-bold text-blue-600">-</div>
+                                            <div class="text-xs text-gray-500">vs</div>
+                                            <div id="bottomDigit1" class="font-bold text-red-600">-</div>
+                                        </div>
+                                        <div id="borrowStatus1" class="text-xs mt-1 text-gray-600">-</div>
+                                    </div>
+                                    <div class="text-center">
+                                        <label class="text-xs text-gray-600">Satuan</label>
+                                        <div class="bg-white p-1 rounded border text-sm">
+                                            <div id="topDigit0" class="font-bold text-blue-600">-</div>
+                                            <div class="text-xs text-gray-500">vs</div>
+                                            <div id="bottomDigit0" class="font-bold text-red-600">-</div>
+                                        </div>
+                                        <div id="borrowStatus0" class="text-xs mt-1 text-gray-600">-</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step result display -->
+                            <div class="bg-red-50 p-3 rounded-lg mb-4">
+                                <div class="text-center mb-2">
+                                    <span class="font-bold text-red-800">Hasil yang Sedang Dibangun:</span>
+                                </div>
+                                <div id="buildingSubResult" class="math-display text-lg max-w-xs mx-auto">
+                                    <div class="text-right space-y-1 font-mono">
+                                        <div style="display: inline-block; width: 120px; text-align: right;" id="subNum1Display">--- &nbsp;</div>
+                                        <div>
+                                            <span style="display: inline-block; width: 100px; text-align: right;" id="subNum2Display">---</span>
+                                            <span class="text-red-600 ml-2">-</span>
+                                        </div>
+                                        <div class="math-line"></div>
+                                        <div style="display: inline-block; width: 120px; text-align: right;" class="text-red-700 font-bold" id="subStepResult">______ &nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Step calculation area -->
+                            <div class="bg-white p-4 rounded-lg border-2 border-red-300">
+                                <div id="currentSubStep" class="text-center mb-4">
+                                    <span class="font-bold text-red-800">Langkah 1: Hitung Satuan</span>
+                                </div>
+                                
+                                <div id="subStepCalculation" class="text-center mb-4">
+                                    <!-- Dynamic step content will be inserted here -->
+                                </div>
+                                
+                                <div class="text-center">
+                                    <input type="text" id="subStepAnswer" class="w-20 p-2 text-center border-2 border-red-300 rounded-lg text-lg font-bold" maxlength="2" placeholder="?">
+                                    <button id="checkSubStep" class="ml-3 bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-all">
+                                        <i class="fas fa-check mr-1"></i>Cek
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick answer mode -->
+                        <div id="quickSubAnswerArea" class="max-w-md mx-auto mb-6">
+                            <div class="text-center mb-4">
+                                <button id="toggleSubMode" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-all">
+                                    <i class="fas fa-exchange-alt mr-2"></i>Mode Kerja Step-by-Step
+                                </button>
+                            </div>
+                            <input type="text" id="subtractionAnswer" class="input-field w-full" placeholder="Masukkan jawaban langsung...">
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <button id="checkSubtraction" class="pokemon-btn mr-3">
+                                <i class="fas fa-check mr-2"></i>Periksa Jawaban
+                            </button>
+                            <button id="newSubtraction" class="bg-gray-500 text-white px-6 py-3 rounded-full hover:bg-gray-600 transition-all">
+                                <i class="fas fa-redo mr-2"></i>Soal Baru
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <div class="progress-bar max-w-md mx-auto">
+                                <div id="subtractionProgress" class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Progress: <span id="subtractionCount">0</span>/5 soal</p>
+                        </div>
+                        
+                        <div id="subtractionFeedback" class="max-w-2xl mx-auto hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word Problems Section -->
+        <div class="glass-card rounded-2xl mb-8 overflow-hidden">
+            <div class="section-header bg-gradient-to-r from-purple-500 to-purple-600">
+                <h3 class="text-2xl font-bold">
+                    <i class="fas fa-book-reader mr-3"></i>Kegiatan 3: Soal Cerita Pokemon
+                </h3>
+            </div>
+            <div class="p-8">
+                <div class="flex flex-col lg:flex-row items-center mb-8">
+                    <div class="floating mb-6 lg:mb-0 lg:mr-8">
+                        <svg class="pokemon-sprite" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <ellipse cx="50" cy="60" rx="30" ry="25" fill="#64B5F6"/>
+                            <circle cx="50" cy="40" r="25" fill="#90CAF9"/>
+                            <circle cx="40" cy="35" r="6" fill="#000"/>
+                            <circle cx="60" cy="35" r="6" fill="#000"/>
+                            <circle cx="40" cy="35" r="2" fill="#fff"/>
+                            <circle cx="60" cy="35" r="2" fill="#fff"/>
+                            <path d="M45 50 Q50 55 55 50" fill="none" stroke="#000" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-2xl font-bold text-purple-700 mb-3">Squirtle's Story Problems</h4>
+                        <p class="text-lg text-gray-700">Squirtle akan membantumu menyelesaikan soal cerita yang melibatkan penjumlahan dan pengurangan!</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <h4 class="text-xl font-bold text-blue-800 mb-4">
+                        <i class="fas fa-lightbulb mr-2"></i>Tips Menyelesaikan Soal Cerita:
+                    </h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-white p-4 rounded-lg border-2 border-blue-200">
+                            <div class="text-center mb-2">
+                                <i class="fas fa-book-open text-2xl text-blue-600"></i>
+                            </div>
+                            <p class="text-center font-semibold">Baca soal dengan teliti</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-2 border-green-200">
+                            <div class="text-center mb-2">
+                                <i class="fas fa-search text-2xl text-green-600"></i>
+                            </div>
+                            <p class="text-center font-semibold">Tentukan yang diketahui dan ditanyakan</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-2 border-yellow-200">
+                            <div class="text-center mb-2">
+                                <i class="fas fa-calculator text-2xl text-yellow-600"></i>
+                            </div>
+                            <p class="text-center font-semibold">Pilih operasi yang tepat</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-2 border-red-200">
+                            <div class="text-center mb-2">
+                                <i class="fas fa-equals text-2xl text-red-600"></i>
+                            </div>
+                            <p class="text-center font-semibold">Hitung dengan benar</p>
+                        </div>
+                        <div class="bg-white p-4 rounded-lg border-2 border-purple-200">
+                            <div class="text-center mb-2">
+                                <i class="fas fa-pen text-2xl text-purple-600"></i>
+                            </div>
+                            <p class="text-center font-semibold">Tulis jawaban lengkap</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8">
+                    <div class="interactive-card">
+                        <div class="bg-gradient-to-r from-yellow-400 to-orange-400 text-white p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-lg">
+                                <i class="fas fa-star mr-2"></i>Soal 1: Pokeball Collection
+                            </h5>
+                        </div>
+                        <p class="text-gray-700 mb-4">
+                            Ash memiliki 234.567 Pokeball. Kemudian dia membeli lagi 123.456 Pokeball. 
+                            Berapa total Pokeball yang dimiliki Ash sekarang?
+                        </p>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="math-display text-lg">
+                                <div class="text-right space-y-1 font-mono">
+                                    <div style="display: inline-block; width: 140px; text-align: right;">234.567 &nbsp;</div>
+                                    <div>
+                                        <span style="display: inline-block; width: 120px; text-align: right;">123.456</span>
+                                        <span class="text-green-600 ml-2">+</span>
+                                    </div>
+                                    <div class="math-line"></div>
+                                    <div style="display: inline-block; width: 140px; text-align: right;" class="text-green-700 font-bold">358.023 &nbsp;</div>
+                                </div>
+                            </div>
+                            <p class="text-center mt-4 font-semibold text-green-700">
+                                Jadi, total Pokeball Ash adalah 358.023 buah.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="interactive-card">
+                        <div class="bg-gradient-to-r from-blue-400 to-purple-400 text-white p-4 rounded-lg mb-4">
+                            <h5 class="font-bold text-lg">
+                                <i class="fas fa-users mr-2"></i>Soal 2: Gym Visitors
+                            </h5>
+                        </div>
+                        <p class="text-gray-700 mb-4">
+                            Gym Pokemon Saffron City memiliki 500.000 pengunjung dalam setahun. 
+                            Jika 234.567 pengunjung adalah anak-anak, berapa pengunjung dewasa?
+                        </p>
+                        <div class="bg-gray-50 p-4 rounded-lg">
+                            <div class="math-display text-lg">
+                                <div class="text-right space-y-1 font-mono">
+                                    <div style="display: inline-block; width: 140px; text-align: right;">500.000 &nbsp;</div>
+                                    <div>
+                                        <span style="display: inline-block; width: 120px; text-align: right;">234.567</span>
+                                        <span class="text-red-600 ml-2">-</span>
+                                    </div>
+                                    <div class="math-line"></div>
+                                    <div style="display: inline-block; width: 140px; text-align: right;" class="text-red-700 font-bold">265.433 &nbsp;</div>
+                                </div>
+                            </div>
+                            <p class="text-center mt-4 font-semibold text-red-700">
+                                Jadi, pengunjung dewasa adalah 265.433 orang.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Word Problem Practice -->
+                <div class="interactive-card mt-8">
+                    <h4 class="text-2xl font-bold text-center mb-6 text-pokemon-blue">
+                        <i class="fas fa-puzzle-piece mr-3"></i>Latihan Soal Cerita Interaktif
+                    </h4>
+                    <div class="text-center mb-6">
+                        <button id="generateWordProblem" class="pokemon-btn">
+                            <i class="fas fa-scroll mr-2"></i>Dapatkan Soal Cerita Baru!
+                        </button>
+                    </div>
+                    
+                    <div id="wordProblemGame" class="hidden">
+                        <div class="bg-gradient-to-r from-indigo-100 to-purple-100 p-6 rounded-xl mb-6">
+                            <div id="wordProblemText" class="text-lg text-gray-800 mb-4"></div>
+                            <div id="wordProblemMath" class="math-display max-w-md mx-auto"></div>
+                        </div>
+                        
+                        <div class="max-w-md mx-auto mb-6">
+                            <input type="text" id="wordProblemAnswer" class="input-field w-full" placeholder="Masukkan jawaban...">
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <button id="checkWordProblem" class="pokemon-btn mr-3">
+                                <i class="fas fa-check mr-2"></i>Periksa Jawaban
+                            </button>
+                            <button id="newWordProblem" class="bg-gray-500 text-white px-6 py-3 rounded-full hover:bg-gray-600 transition-all">
+                                <i class="fas fa-redo mr-2"></i>Soal Baru
+                            </button>
+                        </div>
+                        
+                        <div class="text-center mb-4">
+                            <div class="progress-bar max-w-md mx-auto">
+                                <div id="wordProblemProgress" class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-2">Progress: <span id="wordProblemCount">0</span>/5 soal</p>
+                        </div>
+                        
+                        <div id="wordProblemFeedback" class="max-w-2xl mx-auto hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Conclusion -->
+        <div class="glass-card rounded-2xl mb-8 overflow-hidden">
+            <div class="section-header bg-gradient-to-r from-yellow-500 to-orange-500">
+                <h3 class="text-2xl font-bold">
+                    <i class="fas fa-trophy mr-3"></i>Kesimpulan
+                </h3>
+            </div>
+            <div class="p-8">
+                <div class="flex flex-col lg:flex-row items-center">
+                    <div class="floating mb-6 lg:mb-0 lg:mr-8">
+                        <svg class="pokemon-sprite" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="50" cy="50" r="45" fill="#fff" stroke="#000" stroke-width="2"/>
+                            <path d="M50 5 A45 45 0 0 1 95 50 H5 A45 45 0 0 1 50 5" fill="#ff0000"/>
+                            <circle cx="50" cy="50" r="12" fill="#fff" stroke="#000" stroke-width="2"/>
+                            <circle cx="50" cy="50" r="6" fill="#000"/>
+                        </svg>
+                    </div>
+                    <div class="text-center lg:text-left">
+                        <h4 class="text-3xl font-bold text-yellow-700 mb-4">Selamat, Pokemon Master!</h4>
+                        <p class="text-lg text-gray-700 mb-4">Kamu telah menguasai:</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-green-100 p-4 rounded-lg border-2 border-green-300">
+                                <i class="fas fa-plus text-2xl text-green-600 mb-2"></i>
+                                <p class="font-semibold text-green-800">Penjumlahan bilangan cacah sampai 1.000.000</p>
+                            </div>
+                            <div class="bg-red-100 p-4 rounded-lg border-2 border-red-300">
+                                <i class="fas fa-minus text-2xl text-red-600 mb-2"></i>
+                                <p class="font-semibold text-red-800">Pengurangan bilangan cacah sampai 1.000.000</p>
+                            </div>
+                            <div class="bg-purple-100 p-4 rounded-lg border-2 border-purple-300">
+                                <i class="fas fa-book text-2xl text-purple-600 mb-2"></i>
+                                <p class="font-semibold text-purple-800">Penyelesaian soal cerita matematika</p>
+                            </div>
+                        </div>
+                        <p class="text-lg text-gray-700 mt-4">
+                            Seperti Pokemon yang terus berlatih untuk menjadi lebih kuat, teruslah berlatih matematika untuk menjadi semakin pintar!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Game state variables
+        let additionProblems = [];
+        let subtractionProblems = [];
+        let wordProblems = [];
+        let currentAdditionIndex = 0;
+        let currentSubtractionIndex = 0;
+        let currentWordProblemIndex = 0;
+        let additionScore = 0;
+        let subtractionScore = 0;
+        let wordProblemScore = 0;
+
+        // Step-by-step mode variables
+        let additionStepMode = false;
+        let subtractionStepMode = false;
+        let currentAdditionStep = 0;
+        let currentSubtractionStep = 0;
+        let additionStepData = {};
+        let subtractionStepData = {};
+
+        // Generate problems
+        function generateAdditionProblems() {
+            additionProblems = [];
+            for (let i = 0; i < 5; i++) {
+                const num1 = Math.floor(Math.random() * 400000) + 100000;
+                const num2 = Math.floor(Math.random() * 400000) + 100000;
+                additionProblems.push({
+                    num1: num1,
+                    num2: num2,
+                    answer: num1 + num2
+                });
+            }
+        }
+
+        function generateSubtractionProblems() {
+            subtractionProblems = [];
+            for (let i = 0; i < 5; i++) {
+                const num1 = Math.floor(Math.random() * 400000) + 500000;
+                const num2 = Math.floor(Math.random() * 300000) + 100000;
+                subtractionProblems.push({
+                    num1: num1,
+                    num2: num2,
+                    answer: num1 - num2
+                });
+            }
+        }
+
+        function generateWordProblems() {
+            const templates = [
+                {
+                    text: "Misty menangkap {num1} Pokemon air pada bulan pertama dan {num2} Pokemon air pada bulan kedua. Berapa total Pokemon air yang ditangkap Misty?",
+                    operation: "addition"
+                },
+                {
+                    text: "Brock memiliki {num1} Pokemon food. Dia memberikan {num2} Pokemon food kepada Pokemon-Pokemon di gym. Berapa sisa Pokemon food Brock?",
+                    operation: "subtraction"
+                },
+                {
+                    text: "Pokemon Center Viridian City melayani {num1} Pokemon pada minggu pertama dan {num2} Pokemon pada minggu kedua. Berapa total Pokemon yang dilayani dalam dua minggu?",
+                    operation: "addition"
+                },
+                {
+                    text: "Team Rocket mencuri {num2} Pokeball dari Pokemon Center. Jika awalnya ada {num1} Pokeball, berapa sisa Pokeball sekarang?",
+                    operation: "subtraction"
+                },
+                {
+                    text: "Professor Oak memiliki {num1} data Pokemon. Dia menambah {num2} data baru. Berapa total data Pokemon sekarang?",
+                    operation: "addition"
+                }
+            ];
+
+            wordProblems = [];
+            for (let i = 0; i < 5; i++) {
+                const template = templates[i];
+                let num1, num2;
+                
+                if (template.operation === "addition") {
+                    num1 = Math.floor(Math.random() * 300000) + 100000;
+                    num2 = Math.floor(Math.random() * 300000) + 100000;
+                } else {
+                    num1 = Math.floor(Math.random() * 400000) + 500000;
+                    num2 = Math.floor(Math.random() * 300000) + 100000;
+                }
+
+                wordProblems.push({
+                    text: template.text.replace('{num1}', num1.toLocaleString('id-ID')).replace('{num2}', num2.toLocaleString('id-ID')),
+                    num1: num1,
+                    num2: num2,
+                    operation: template.operation,
+                    answer: template.operation === "addition" ? num1 + num2 : num1 - num2
+                });
+            }
+        }
+
+        // Initialize problems
+        generateAdditionProblems();
+        generateSubtractionProblems();
+        generateWordProblems();
+
+        // Toggle mode functions
+        document.getElementById('toggleMode').addEventListener('click', function() {
+            additionStepMode = !additionStepMode;
+            if (additionStepMode) {
+                document.getElementById('additionStepArea').classList.remove('hidden');
+                document.getElementById('quickAnswerArea').classList.add('hidden');
+                document.getElementById('toggleMode').innerHTML = '<i class="fas fa-exchange-alt mr-2"></i>Mode Jawaban Langsung';
+                initializeAdditionStep();
+            } else {
+                document.getElementById('additionStepArea').classList.add('hidden');
+                document.getElementById('quickAnswerArea').classList.remove('hidden');
+                document.getElementById('toggleMode').innerHTML = '<i class="fas fa-exchange-alt mr-2"></i>Mode Kerja Step-by-Step';
+            }
+        });
+
+        document.getElementById('toggleSubMode').addEventListener('click', function() {
+            subtractionStepMode = !subtractionStepMode;
+            if (subtractionStepMode) {
+                document.getElementById('subtractionStepArea').classList.remove('hidden');
+                document.getElementById('quickSubAnswerArea').classList.add('hidden');
+                document.getElementById('toggleSubMode').innerHTML = '<i class="fas fa-exchange-alt mr-2"></i>Mode Jawaban Langsung';
+                initializeSubtractionStep();
+            } else {
+                document.getElementById('subtractionStepArea').classList.add('hidden');
+                document.getElementById('quickSubAnswerArea').classList.remove('hidden');
+                document.getElementById('toggleSubMode').innerHTML = '<i class="fas fa-exchange-alt mr-2"></i>Mode Kerja Step-by-Step';
+            }
+        });
+
+        // Addition game functions
+        document.getElementById('generateAddition').addEventListener('click', function() {
+            document.getElementById('additionGame').classList.remove('hidden');
+            showAdditionProblem();
+        });
+
+        document.getElementById('newAddition').addEventListener('click', function() {
+            showAdditionProblem();
+            document.getElementById('additionFeedback').classList.add('hidden');
+            document.getElementById('additionAnswer').value = '';
+        });
+
+        function showAdditionProblem() {
+            if (currentAdditionIndex >= additionProblems.length) {
+                currentAdditionIndex = 0;
+                additionScore = 0;
+                generateAdditionProblems();
+            }
+
+            const problem = additionProblems[currentAdditionIndex];
+            document.getElementById('additionProblem').innerHTML = `
+                <div class="text-right space-y-1 font-mono">
+                    <div style="display: inline-block; width: 140px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                    <div>
+                        <span style="display: inline-block; width: 120px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                        <span class="text-green-600 ml-2">+</span>
+                    </div>
+                    <div class="math-line"></div>
+                    <div style="display: inline-block; width: 140px; text-align: right;" class="text-green-700 font-bold">? &nbsp;</div>
+                </div>
+            `;
+        }
+
+        document.getElementById('checkAddition').addEventListener('click', function() {
+            const userAnswer = parseInt(document.getElementById('additionAnswer').value.replace(/\D/g, '')) || 0;
+            const problem = additionProblems[currentAdditionIndex];
+            const feedback = document.getElementById('additionFeedback');
+            feedback.classList.remove('hidden');
+
+            if (userAnswer === problem.answer) {
+                additionScore++;
+                feedback.className = 'max-w-2xl mx-auto p-6 rounded-xl bg-gradient-to-r from-green-100 to-green-200 border-2 border-green-300 success-animation';
+                feedback.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-check-circle text-4xl text-green-600 mb-3"></i>
+                        <h5 class="text-xl font-bold text-green-800 mb-2">🎉 Hebat! Jawaban kamu benar!</h5>
+                        <div class="math-display max-w-xs mx-auto mb-3">
+                            <div class="text-right space-y-1 text-sm font-mono">
+                                <div style="display: inline-block; width: 120px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                                <div>
+                                    <span style="display: inline-block; width: 100px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                                    <span class="text-green-600 ml-2">+</span>
+                                </div>
+                                <div class="math-line"></div>
+                                <div style="display: inline-block; width: 120px; text-align: right;" class="text-green-700 font-bold">${problem.answer.toLocaleString('id-ID')} &nbsp;</div>
+                            </div>
+                        </div>
+                        <p class="text-green-700">Kamu semakin dekat menjadi Pokemon Master!</p>
+                    </div>
+                `;
+            } else {
+                feedback.className = 'max-w-2xl mx-auto p-6 rounded-xl bg-gradient-to-r from-red-100 to-red-200 border-2 border-red-300';
+                feedback.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-times-circle text-4xl text-red-600 mb-3"></i>
+                        <h5 class="text-xl font-bold text-red-800 mb-2">💪 Hampir benar! Coba lagi!</h5>
+                        <div class="math-display max-w-xs mx-auto mb-3">
+                            <div class="text-right space-y-1 text-sm font-mono">
+                                <div style="display: inline-block; width: 120px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                                <div>
+                                    <span style="display: inline-block; width: 100px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                                    <span class="text-green-600 ml-2">+</span>
+                                </div>
+                                <div class="math-line"></div>
+                                <div style="display: inline-block; width: 120px; text-align: right;" class="text-green-700 font-bold">${problem.answer.toLocaleString('id-ID')} &nbsp;</div>
+                            </div>
+                        </div>
+                        <p class="text-red-700">Ingat: susun bilangan secara vertikal dan mulai dari kolom satuan!</p>
+                    </div>
+                `;
+            }
+
+            currentAdditionIndex++;
+            updateAdditionProgress();
+        });
+
+        function updateAdditionProgress() {
+            const progress = (currentAdditionIndex / additionProblems.length) * 100;
+            document.getElementById('additionProgress').style.width = progress + '%';
+            document.getElementById('additionCount').textContent = currentAdditionIndex;
+        }
+
+        // Subtraction game functions
+        document.getElementById('generateSubtraction').addEventListener('click', function() {
+            document.getElementById('subtractionGame').classList.remove('hidden');
+            showSubtractionProblem();
+        });
+
+        document.getElementById('newSubtraction').addEventListener('click', function() {
+            showSubtractionProblem();
+            document.getElementById('subtractionFeedback').classList.add('hidden');
+            document.getElementById('subtractionAnswer').value = '';
+        });
+
+        function showSubtractionProblem() {
+            if (currentSubtractionIndex >= subtractionProblems.length) {
+                currentSubtractionIndex = 0;
+                subtractionScore = 0;
+                generateSubtractionProblems();
+            }
+
+            const problem = subtractionProblems[currentSubtractionIndex];
+            document.getElementById('subtractionProblem').innerHTML = `
+                <div class="text-right space-y-1 font-mono">
+                    <div style="display: inline-block; width: 140px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                    <div>
+                        <span style="display: inline-block; width: 120px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                        <span class="text-red-600 ml-2">-</span>
+                    </div>
+                    <div class="math-line"></div>
+                    <div style="display: inline-block; width: 140px; text-align: right;" class="text-red-700 font-bold">? &nbsp;</div>
+                </div>
+            `;
+        }
+
+        document.getElementById('checkSubtraction').addEventListener('click', function() {
+            const userAnswer = parseInt(document.getElementById('subtractionAnswer').value.replace(/\D/g, '')) || 0;
+            const problem = subtractionProblems[currentSubtractionIndex];
+            const feedback = document.getElementById('subtractionFeedback');
+            feedback.classList.remove('hidden');
+
+            if (userAnswer === problem.answer) {
+                subtractionScore++;
+                feedback.className = 'max-w-2xl mx-auto p-6 rounded-xl bg-gradient-to-r from-green-100 to-green-200 border-2 border-green-300 success-animation';
+                feedback.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-check-circle text-4xl text-green-600 mb-3"></i>
+                        <h5 class="text-xl font-bold text-green-800 mb-2">🎉 Hebat! Jawaban kamu benar!</h5>
+                        <div class="math-display max-w-xs mx-auto mb-3">
+                            <div class="text-right space-y-1 text-sm font-mono">
+                                <div style="display: inline-block; width: 120px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                                <div>
+                                    <span style="display: inline-block; width: 100px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                                    <span class="text-red-600 ml-2">-</span>
+                                </div>
+                                <div class="math-line"></div>
+                                <div style="display: inline-block; width: 120px; text-align: right;" class="text-red-700 font-bold">${problem.answer.toLocaleString('id-ID')} &nbsp;</div>
+                            </div>
+                        </div>
+                        <p class="text-green-700">Kamu semakin dekat menjadi Pokemon Master!</p>
+                    </div>
+                `;
+            } else {
+                feedback.className = 'max-w-2xl mx-auto p-6 rounded-xl bg-gradient-to-r from-red-100 to-red-200 border-2 border-red-300';
+                feedback.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-times-circle text-4xl text-red-600 mb-3"></i>
+                        <h5 class="text-xl font-bold text-red-800 mb-2">💪 Hampir benar! Coba lagi!</h5>
+                        <div class="math-display max-w-xs mx-auto mb-3">
+                            <div class="text-right space-y-1 text-sm font-mono">
+                                <div style="display: inline-block; width: 120px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                                <div>
+                                    <span style="display: inline-block; width: 100px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                                    <span class="text-red-600 ml-2">-</span>
+                                </div>
+                                <div class="math-line"></div>
+                                <div style="display: inline-block; width: 120px; text-align: right;" class="text-red-700 font-bold">${problem.answer.toLocaleString('id-ID')} &nbsp;</div>
+                            </div>
+                        </div>
+                        <p class="text-red-700">Ingat: jika angka atas lebih kecil, pinjam dari kolom sebelah kiri!</p>
+                    </div>
+                `;
+            }
+
+            currentSubtractionIndex++;
+            updateSubtractionProgress();
+        });
+
+        function updateSubtractionProgress() {
+            const progress = (currentSubtractionIndex / subtractionProblems.length) * 100;
+            document.getElementById('subtractionProgress').style.width = progress + '%';
+            document.getElementById('subtractionCount').textContent = currentSubtractionIndex;
+        }
+
+        // Word problem functions
+        document.getElementById('generateWordProblem').addEventListener('click', function() {
+            document.getElementById('wordProblemGame').classList.remove('hidden');
+            showWordProblem();
+        });
+
+        document.getElementById('newWordProblem').addEventListener('click', function() {
+            showWordProblem();
+            document.getElementById('wordProblemFeedback').classList.add('hidden');
+            document.getElementById('wordProblemAnswer').value = '';
+        });
+
+        function showWordProblem() {
+            if (currentWordProblemIndex >= wordProblems.length) {
+                currentWordProblemIndex = 0;
+                wordProblemScore = 0;
+                generateWordProblems();
+            }
+
+            const problem = wordProblems[currentWordProblemIndex];
+            document.getElementById('wordProblemText').textContent = problem.text;
+            
+            const operator = problem.operation === 'addition' ? '+' : '-';
+            const operatorColor = problem.operation === 'addition' ? 'text-green-600' : 'text-red-600';
+            const resultColor = problem.operation === 'addition' ? 'text-green-700' : 'text-red-700';
+            
+            document.getElementById('wordProblemMath').innerHTML = `
+                <div class="text-right space-y-1 font-mono">
+                    <div style="display: inline-block; width: 140px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                    <div>
+                        <span style="display: inline-block; width: 120px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                        <span class="${operatorColor} ml-2">${operator}</span>
+                    </div>
+                    <div class="math-line"></div>
+                    <div style="display: inline-block; width: 140px; text-align: right;" class="${resultColor} font-bold">? &nbsp;</div>
+                </div>
+            `;
+        }
+
+        document.getElementById('checkWordProblem').addEventListener('click', function() {
+            const userAnswer = parseInt(document.getElementById('wordProblemAnswer').value.replace(/\D/g, '')) || 0;
+            const problem = wordProblems[currentWordProblemIndex];
+            const feedback = document.getElementById('wordProblemFeedback');
+            feedback.classList.remove('hidden');
+
+            const operator = problem.operation === 'addition' ? '+' : '-';
+            const operatorColor = problem.operation === 'addition' ? 'text-green-600' : 'text-red-600';
+            const resultColor = problem.operation === 'addition' ? 'text-green-700' : 'text-red-700';
+
+            if (userAnswer === problem.answer) {
+                wordProblemScore++;
+                feedback.className = 'max-w-2xl mx-auto p-6 rounded-xl bg-gradient-to-r from-green-100 to-green-200 border-2 border-green-300 success-animation';
+                feedback.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-check-circle text-4xl text-green-600 mb-3"></i>
+                        <h5 class="text-xl font-bold text-green-800 mb-2">🎉 Hebat! Jawaban kamu benar!</h5>
+                        <div class="math-display max-w-xs mx-auto mb-3">
+                            <div class="text-right space-y-1 text-sm font-mono">
+                                <div style="display: inline-block; width: 120px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                                <div>
+                                    <span style="display: inline-block; width: 100px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                                    <span class="${operatorColor} ml-2">${operator}</span>
+                                </div>
+                                <div class="math-line"></div>
+                                <div style="display: inline-block; width: 120px; text-align: right;" class="${resultColor} font-bold">${problem.answer.toLocaleString('id-ID')} &nbsp;</div>
+                            </div>
+                        </div>
+                        <p class="text-green-700">Kamu berhasil menyelesaikan soal cerita dengan sempurna!</p>
+                    </div>
+                `;
+            } else {
+                feedback.className = 'max-w-2xl mx-auto p-6 rounded-xl bg-gradient-to-r from-red-100 to-red-200 border-2 border-red-300';
+                feedback.innerHTML = `
+                    <div class="text-center">
+                        <i class="fas fa-times-circle text-4xl text-red-600 mb-3"></i>
+                        <h5 class="text-xl font-bold text-red-800 mb-2">💪 Hampir benar! Coba lagi!</h5>
+                        <div class="math-display max-w-xs mx-auto mb-3">
+                            <div class="text-right space-y-1 text-sm font-mono">
+                                <div style="display: inline-block; width: 120px; text-align: right;">${problem.num1.toLocaleString('id-ID')} &nbsp;</div>
+                                <div>
+                                    <span style="display: inline-block; width: 100px; text-align: right;">${problem.num2.toLocaleString('id-ID')}</span>
+                                    <span class="${operatorColor} ml-2">${operator}</span>
+                                </div>
+                                <div class="math-line"></div>
+                                <div style="display: inline-block; width: 120px; text-align: right;" class="${resultColor} font-bold">${problem.answer.toLocaleString('id-ID')} &nbsp;</div>
+                            </div>
+                        </div>
+                        <p class="text-red-700">Baca soal dengan teliti dan tentukan operasi yang tepat!</p>
+                    </div>
+                `;
+            }
+
+            currentWordProblemIndex++;
+            updateWordProblemProgress();
+        });
+
+        function updateWordProblemProgress() {
+            const progress = (currentWordProblemIndex / wordProblems.length) * 100;
+            document.getElementById('wordProblemProgress').style.width = progress + '%';
+            document.getElementById('wordProblemCount').textContent = currentWordProblemIndex;
+        }
+
+        // Simulation variables
+        let additionSimStep = 0;
+        let subtractionSimStep = 0;
+        
+        // Addition simulation
+        document.getElementById('showAdditionSimulation').addEventListener('click', function() {
+            document.getElementById('additionSimulation').classList.remove('hidden');
+            resetAdditionSimulation();
+        });
+        
+        document.getElementById('resetAdditionSim').addEventListener('click', resetAdditionSimulation);
+        
+        function resetAdditionSimulation() {
+            additionSimStep = 0;
+            document.getElementById('additionSteps').innerHTML = `
+                <div class="text-right space-y-1 font-mono">
+                    <div style="display: inline-block; width: 140px; text-align: right;">234.567 &nbsp;</div>
+                    <div>
+                        <span style="display: inline-block; width: 120px; text-align: right;">189.456</span>
+                        <span class="text-green-600 ml-2">+</span>
+                    </div>
+                    <div class="math-line"></div>
+                    <div style="display: inline-block; width: 140px; text-align: right;" class="text-green-700 font-bold">_______ &nbsp;</div>
+                </div>
+                <div class="mt-4 text-center">
+                    <div class="bg-yellow-100 p-3 rounded-lg inline-block">
+                        <span class="font-bold text-yellow-800">Tempat Simpan: </span>
+                        <span id="carryValue" class="text-red-600 font-bold">0</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('additionExplanation').textContent = 'Klik "Langkah Berikutnya" untuk memulai simulasi';
+        }
+        
+        document.getElementById('nextAdditionStep').addEventListener('click', function() {
+            const steps = [
+                {
+                    result: '______3',
+                    carry: '1',
+                    explanation: 'Satuan: 7 + 6 = 13. Tulis 3, simpan 1'
+                },
+                {
+                    result: '_____23',
+                    carry: '1', 
+                    explanation: 'Puluhan: 6 + 5 + 1(simpan) = 12. Tulis 2, simpan 1'
+                },
+                {
+                    result: '____023',
+                    carry: '1',
+                    explanation: 'Ratusan: 5 + 4 + 1(simpan) = 10. Tulis 0, simpan 1'
+                },
+                {
+                    result: '___4023',
+                    carry: '1',
+                    explanation: 'Ribuan: 4 + 9 + 1(simpan) = 14. Tulis 4, simpan 1'
+                },
+                {
+                    result: '__24023',
+                    carry: '1',
+                    explanation: 'Puluhan ribu: 3 + 8 + 1(simpan) = 12. Tulis 2, simpan 1'
+                },
+                {
+                    result: '424.023',
+                    carry: '0',
+                    explanation: 'Ratusan ribu: 2 + 1 + 1(simpan) = 4. Tulis 4. Selesai!'
+                }
+            ];
+            
+            if (additionSimStep < steps.length) {
+                const step = steps[additionSimStep];
+                document.getElementById('additionSteps').innerHTML = `
+                    <div class="text-right space-y-1 font-mono">
+                        <div style="display: inline-block; width: 140px; text-align: right;">234.567 &nbsp;</div>
+                        <div>
+                            <span style="display: inline-block; width: 120px; text-align: right;">189.456</span>
+                            <span class="text-green-600 ml-2">+</span>
+                        </div>
+                        <div class="math-line"></div>
+                        <div style="display: inline-block; width: 140px; text-align: right;" class="text-green-700 font-bold">${step.result} &nbsp;</div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div class="bg-yellow-100 p-3 rounded-lg inline-block">
+                            <span class="font-bold text-yellow-800">Tempat Simpan: </span>
+                            <span class="text-red-600 font-bold">${step.carry}</span>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('additionExplanation').textContent = step.explanation;
+                additionSimStep++;
+            }
+        });
+        
+        // Subtraction simulation
+        document.getElementById('showSubtractionSimulation').addEventListener('click', function() {
+            document.getElementById('subtractionSimulation').classList.remove('hidden');
+            resetSubtractionSimulation();
+        });
+        
+        document.getElementById('resetSubtractionSim').addEventListener('click', resetSubtractionSimulation);
+        
+        function resetSubtractionSimulation() {
+            subtractionSimStep = 0;
+            document.getElementById('subtractionSteps').innerHTML = `
+                <div class="text-right space-y-1 font-mono">
+                    <div id="topNumber" style="display: inline-block; width: 140px; text-align: right; position: relative;">
+                        <span id="digit6">5</span><span id="digit5">0</span><span id="digit4">0</span>.<span id="digit3">0</span><span id="digit2">0</span><span id="digit1">0</span> &nbsp;
+                    </div>
+                    <div>
+                        <span style="display: inline-block; width: 120px; text-align: right;">234.567</span>
+                        <span class="text-red-600 ml-2">-</span>
+                    </div>
+                    <div class="math-line"></div>
+                    <div style="display: inline-block; width: 140px; text-align: right;" class="text-red-700 font-bold">_______ &nbsp;</div>
+                </div>
+                <div class="mt-4 text-center">
+                    <div class="bg-blue-100 p-3 rounded-lg inline-block">
+                        <span class="font-bold text-blue-800">Status: </span>
+                        <span id="borrowStatus" class="text-purple-600 font-bold">Siap memulai</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('subtractionExplanation').textContent = 'Klik "Langkah Berikutnya" untuk memulai simulasi';
+        }
+        
+        document.getElementById('nextSubtractionStep').addEventListener('click', function() {
+            const steps = [
+                {
+                    result: '______3',
+                    topNumber: '<span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-red-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-yellow-200">4</span></span><span style="display: inline-block; width: 18px; text-align: center;">0</span><span style="display: inline-block; width: 18px; text-align: center;">0</span>.<span style="display: inline-block; width: 18px; text-align: center;">0</span><span style="display: inline-block; width: 18px; text-align: center;">0</span><span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-blue-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-red-200">10</span></span>',
+                    status: 'Langkah 1: Satuan',
+                    explanation: 'Satuan: 0 < 7, pinjam 1 dari puluhan. Puluhan 5→4, Satuan 0→10. Hitung: 10 - 7 = 3'
+                },
+                {
+                    result: '_____33',
+                    topNumber: '<span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-red-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-yellow-200">4</span></span><span style="display: inline-block; width: 18px; text-align: center;">0</span><span style="display: inline-block; width: 18px; text-align: center;">0</span>.<span style="display: inline-block; width: 18px; text-align: center;">0</span><span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-blue-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-red-200">9</span></span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">10</span>',
+                    status: 'Langkah 2: Puluhan',
+                    explanation: 'Puluhan: 4 < 6, pinjam 1 dari ratusan. Ratusan 0→9 (dari ribuan), Puluhan 4→14. Hitung: 14 - 6 = 8, tapi kita tulis 3 karena ada rantai pinjaman'
+                },
+                {
+                    result: '____433',
+                    topNumber: '<span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-red-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-yellow-200">4</span></span><span style="display: inline-block; width: 18px; text-align: center;">0</span><span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-blue-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-red-200">9</span></span>.<span style="display: inline-block; width: 18px; text-align: center;">0</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">9</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">10</span>',
+                    status: 'Langkah 3: Ratusan',
+                    explanation: 'Ratusan: 0 < 5, pinjam dari ribuan. Ribuan 0→9 (dari pul.ribu), Ratusan 0→10. Hitung: 10 - 5 = 5, tapi tulis 4 karena sudah dipinjam'
+                },
+                {
+                    result: '___5433',
+                    topNumber: '<span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-red-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-yellow-200">4</span></span><span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-blue-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-red-200">9</span></span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">9</span>.<span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">0</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">9</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">10</span>',
+                    status: 'Langkah 4: Ribuan',
+                    explanation: 'Ribuan: 0 < 4, pinjam dari puluhan ribu. Pul.ribu 0→9 (dari rat.ribu), Ribuan 0→10. Hitung: 10 - 4 = 6, tapi tulis 5'
+                },
+                {
+                    result: '__65433',
+                    topNumber: '<span style="position: relative; display: inline-block; width: 18px; text-align: center;"><sup class="text-xs text-red-600 font-bold" style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%);">1</sup><span class="bg-yellow-200">4</span></span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">9</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">9</span>.<span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">0</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">9</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">10</span>',
+                    status: 'Langkah 5: Puluhan Ribu',
+                    explanation: 'Puluhan ribu: 0 < 3, pinjam dari ratusan ribu. Rat.ribu 5→4, Pul.ribu 0→10. Hitung: 10 - 3 = 7, tapi tulis 6'
+                },
+                {
+                    result: '265.433',
+                    topNumber: '<span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">2</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">6</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">5</span>.<span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">4</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">3</span><span style="display: inline-block; width: 18px; text-align: center;" class="bg-gray-200">3</span>',
+                    status: 'Selesai!',
+                    explanation: 'Ratusan ribu: 5-1 = 4, lalu 4 - 2 = 2. Semua peminjaman selesai! Hasil: 265.433'
+                }
+            ];
+            
+            if (subtractionSimStep < steps.length) {
+                const step = steps[subtractionSimStep];
+                document.getElementById('subtractionSteps').innerHTML = `
+                    <div class="text-right space-y-1 font-mono">
+                        <div id="topNumber" style="display: inline-block; width: 140px; text-align: right; position: relative; line-height: 2;">
+                            ${step.topNumber} &nbsp;
+                        </div>
+                        <div>
+                            <span style="display: inline-block; width: 120px; text-align: right;">234.567</span>
+                            <span class="text-red-600 ml-2">-</span>
+                        </div>
+                        <div class="math-line"></div>
+                        <div style="display: inline-block; width: 140px; text-align: right;" class="text-red-700 font-bold">${step.result} &nbsp;</div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <div class="bg-blue-100 p-3 rounded-lg inline-block">
+                            <span class="font-bold text-blue-800">Status: </span>
+                            <span class="text-purple-600 font-bold">${step.status}</span>
+                        </div>
+                    </div>
+                `;
+                document.getElementById('subtractionExplanation').textContent = step.explanation;
+                subtractionSimStep++;
+            }
+        });
+
+        // Step-by-step calculation functions
+        function initializeAdditionStep() {
+            if (currentAdditionIndex >= additionProblems.length) return;
+            
+            const problem = additionProblems[currentAdditionIndex];
+            currentAdditionStep = 0;
+            
+            // Convert numbers to digit arrays
+            const num1Str = problem.num1.toString().padStart(6, '0');
+            const num2Str = problem.num2.toString().padStart(6, '0');
+            
+            additionStepData = {
+                num1Digits: num1Str.split('').map(Number),
+                num2Digits: num2Str.split('').map(Number),
+                carries: [0, 0, 0, 0, 0, 0],
+                results: ['_', '_', '_', '_', '_', '_'],
+                stepNames: ['Satuan', 'Puluhan', 'Ratusan', 'Ribuan', 'Puluhan Ribu', 'Ratusan Ribu']
+            };
+            
+            // Clear carry displays
+            for (let i = 0; i < 6; i++) {
+                document.getElementById(`carry${i}`).value = '';
+            }
+            
+            // Initialize result display
+            document.getElementById('addNum1Display').textContent = problem.num1.toLocaleString('id-ID') + ' ';
+            document.getElementById('addNum2Display').textContent = problem.num2.toLocaleString('id-ID');
+            document.getElementById('stepResult').textContent = '______ ';
+            
+            showAdditionStep();
+        }
+
+        function showAdditionStep() {
+            if (currentAdditionStep >= 6) {
+                // All steps completed
+                document.getElementById('currentStep').innerHTML = '<span class="font-bold text-green-800">🎉 Selesai! Semua langkah telah diselesaikan!</span>';
+                document.getElementById('stepCalculation').innerHTML = '<p class="text-green-700">Kamu telah menyelesaikan semua langkah penjumlahan dengan benar!</p>';
+                document.getElementById('stepAnswer').style.display = 'none';
+                document.getElementById('checkStep').style.display = 'none';
+                return;
+            }
+            
+            const stepIndex = 5 - currentAdditionStep; // Start from rightmost (satuan)
+            const digit1 = additionStepData.num1Digits[stepIndex];
+            const digit2 = additionStepData.num2Digits[stepIndex];
+            const carry = currentAdditionStep > 0 ? additionStepData.carries[stepIndex + 1] : 0;
+            
+            document.getElementById('currentStep').innerHTML = `<span class="font-bold text-green-800">Langkah ${currentAdditionStep + 1}: Hitung ${additionStepData.stepNames[currentAdditionStep]}</span>`;
+            
+            let calculationText = `${digit1} + ${digit2}`;
+            if (carry > 0) {
+                calculationText += ` + ${carry} (simpan)`;
+            }
+            calculationText += ' = ?';
+            
+            document.getElementById('stepCalculation').innerHTML = `
+                <div class="text-lg font-bold text-green-700">${calculationText}</div>
+                <div class="text-sm text-gray-600 mt-2">
+                    ${carry > 0 ? 'Jangan lupa tambahkan angka yang disimpan dari langkah sebelumnya!' : 'Hitung penjumlahan digit ini.'}
+                </div>
+            `;
+            
+            document.getElementById('stepAnswer').value = '';
+            document.getElementById('stepAnswer').focus();
+        }
+
+        function initializeSubtractionStep() {
+            if (currentSubtractionIndex >= subtractionProblems.length) return;
+            
+            const problem = subtractionProblems[currentSubtractionIndex];
+            currentSubtractionStep = 0;
+            
+            // Convert numbers to digit arrays
+            const num1Str = problem.num1.toString().padStart(6, '0');
+            const num2Str = problem.num2.toString().padStart(6, '0');
+            
+            subtractionStepData = {
+                num1Digits: num1Str.split('').map(Number),
+                num2Digits: num2Str.split('').map(Number),
+                modifiedNum1: num1Str.split('').map(Number), // This will be modified during borrowing
+                results: ['_', '_', '_', '_', '_', '_'],
+                stepNames: ['Satuan', 'Puluhan', 'Ratusan', 'Ribuan', 'Puluhan Ribu', 'Ratusan Ribu']
+            };
+            
+            // Initialize comparison display
+            for (let i = 0; i < 6; i++) {
+                const stepIndex = 5 - i;
+                document.getElementById(`topDigit${i}`).textContent = subtractionStepData.num1Digits[stepIndex];
+                document.getElementById(`bottomDigit${i}`).textContent = subtractionStepData.num2Digits[stepIndex];
+                document.getElementById(`borrowStatus${i}`).textContent = '-';
+            }
+            
+            // Initialize result display
+            document.getElementById('subNum1Display').textContent = problem.num1.toLocaleString('id-ID') + ' ';
+            document.getElementById('subNum2Display').textContent = problem.num2.toLocaleString('id-ID');
+            document.getElementById('subStepResult').textContent = '______ ';
+            
+            showSubtractionStep();
+        }
+
+        function showSubtractionStep() {
+            if (currentSubtractionStep >= 6) {
+                // All steps completed
+                document.getElementById('currentSubStep').innerHTML = '<span class="font-bold text-red-800">🎉 Selesai! Semua langkah telah diselesaikan!</span>';
+                document.getElementById('subStepCalculation').innerHTML = '<p class="text-red-700">Kamu telah menyelesaikan semua langkah pengurangan dengan benar!</p>';
+                document.getElementById('subStepAnswer').style.display = 'none';
+                document.getElementById('checkSubStep').style.display = 'none';
+                return;
+            }
+            
+            const stepIndex = 5 - currentSubtractionStep; // Start from rightmost (satuan)
+            const topDigit = subtractionStepData.modifiedNum1[stepIndex];
+            const bottomDigit = subtractionStepData.num2Digits[stepIndex];
+            
+            document.getElementById('currentSubStep').innerHTML = `<span class="font-bold text-red-800">Langkah ${currentSubtractionStep + 1}: Hitung ${subtractionStepData.stepNames[currentSubtractionStep]}</span>`;
+            
+            // Update current step comparison
+            document.getElementById(`topDigit${currentSubtractionStep}`).textContent = topDigit;
+            document.getElementById(`topDigit${currentSubtractionStep}`).className = 'font-bold text-green-600 bg-green-100 px-1 rounded';
+            
+            let calculationText, needsBorrow = false;
+            
+            if (topDigit < bottomDigit) {
+                needsBorrow = true;
+                calculationText = `${topDigit} < ${bottomDigit} → Perlu pinjam!`;
+                document.getElementById(`borrowStatus${currentSubtractionStep}`).textContent = 'Pinjam';
+                document.getElementById(`borrowStatus${currentSubtractionStep}`).className = 'text-xs mt-1 text-red-600 font-bold';
+            } else {
+                calculationText = `${topDigit} - ${bottomDigit} = ?`;
+                document.getElementById(`borrowStatus${currentSubtractionStep}`).textContent = 'OK';
+                document.getElementById(`borrowStatus${currentSubtractionStep}`).className = 'text-xs mt-1 text-green-600 font-bold';
+            }
+            
+            document.getElementById('subStepCalculation').innerHTML = `
+                <div class="text-lg font-bold text-red-700">${calculationText}</div>
+                <div class="text-sm text-gray-600 mt-2">
+                    ${needsBorrow ? 
+                        'Angka atas lebih kecil dari bawah. Pinjam 1 dari kolom sebelah kiri, ubah angka atas menjadi ' + (topDigit + 10) + ', lalu hitung ' + (topDigit + 10) + ' - ' + bottomDigit + ' = ?' :
+                        'Angka atas lebih besar atau sama. Langsung kurangkan.'
+                    }
+                </div>
+            `;
+            
+            document.getElementById('subStepAnswer').value = '';
+            document.getElementById('subStepAnswer').focus();
+        }
+
+        // Step checking functions
+        document.getElementById('checkStep').addEventListener('click', function() {
+            const userAnswer = parseInt(document.getElementById('stepAnswer').value) || 0;
+            const stepIndex = 5 - currentAdditionStep;
+            const digit1 = additionStepData.num1Digits[stepIndex];
+            const digit2 = additionStepData.num2Digits[stepIndex];
+            const carry = currentAdditionStep > 0 ? additionStepData.carries[stepIndex + 1] : 0;
+            
+            const sum = digit1 + digit2 + carry;
+            const expectedResult = sum % 10;
+            const newCarry = Math.floor(sum / 10);
+            
+            if (userAnswer === expectedResult) {
+                // Correct answer
+                additionStepData.carries[stepIndex] = newCarry;
+                additionStepData.results[stepIndex] = expectedResult;
+                
+                // Update carry display
+                if (newCarry > 0) {
+                    document.getElementById(`carry${currentAdditionStep}`).value = newCarry;
+                }
+                
+                // Update result display
+                updateAdditionResultDisplay();
+                
+                // Show success message
+                document.getElementById('stepCalculation').innerHTML = `
+                    <div class="text-lg font-bold text-green-700">✅ Benar! ${digit1} + ${digit2}${carry > 0 ? ' + ' + carry : ''} = ${sum}</div>
+                    <div class="text-sm text-green-600 mt-2">
+                        Tulis ${expectedResult}${newCarry > 0 ? ', simpan ' + newCarry : ''}
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    currentAdditionStep++;
+                    showAdditionStep();
+                }, 1500);
+            } else {
+                // Wrong answer
+                document.getElementById('stepCalculation').innerHTML = `
+                    <div class="text-lg font-bold text-red-700">❌ Belum tepat. Coba lagi!</div>
+                    <div class="text-sm text-red-600 mt-2">
+                        Ingat: ${digit1} + ${digit2}${carry > 0 ? ' + ' + carry + ' (simpan)' : ''} = ?
+                    </div>
+                `;
+                document.getElementById('stepAnswer').value = '';
+                document.getElementById('stepAnswer').focus();
+            }
+        });
+
+        document.getElementById('checkSubStep').addEventListener('click', function() {
+            const userAnswer = parseInt(document.getElementById('subStepAnswer').value) || 0;
+            const stepIndex = 5 - currentSubtractionStep;
+            let topDigit = subtractionStepData.modifiedNum1[stepIndex];
+            const bottomDigit = subtractionStepData.num2Digits[stepIndex];
+            
+            let expectedResult;
+            let needsBorrow = topDigit < bottomDigit;
+            
+            if (needsBorrow) {
+                // Handle borrowing
+                if (stepIndex > 0) {
+                    // Find the next non-zero digit to borrow from
+                    let borrowIndex = stepIndex - 1;
+                    while (borrowIndex >= 0 && subtractionStepData.modifiedNum1[borrowIndex] === 0) {
+                        subtractionStepData.modifiedNum1[borrowIndex] = 9;
+                        borrowIndex--;
+                    }
+                    if (borrowIndex >= 0) {
+                        subtractionStepData.modifiedNum1[borrowIndex]--;
+                    }
+                }
+                topDigit += 10;
+                subtractionStepData.modifiedNum1[stepIndex] = topDigit;
+                expectedResult = topDigit - bottomDigit;
+            } else {
+                expectedResult = topDigit - bottomDigit;
+            }
+            
+            if (userAnswer === expectedResult) {
+                // Correct answer
+                subtractionStepData.results[stepIndex] = expectedResult;
+                
+                // Update display to show borrowing effects
+                for (let i = 0; i < 6; i++) {
+                    const displayIndex = 5 - i;
+                    document.getElementById(`topDigit${i}`).textContent = subtractionStepData.modifiedNum1[displayIndex];
+                }
+                
+                // Update result display
+                updateSubtractionResultDisplay();
+                
+                // Show success message
+                document.getElementById('subStepCalculation').innerHTML = `
+                    <div class="text-lg font-bold text-green-700">✅ Benar! ${needsBorrow ? (topDigit - 10) + ' + 10' : topDigit} - ${bottomDigit} = ${expectedResult}</div>
+                    <div class="text-sm text-green-600 mt-2">
+                        ${needsBorrow ? 'Setelah meminjam: ' + topDigit + ' - ' + bottomDigit + ' = ' + expectedResult : 'Hasil: ' + expectedResult}
+                    </div>
+                `;
+                
+                setTimeout(() => {
+                    currentSubtractionStep++;
+                    showSubtractionStep();
+                }, 1500);
+            } else {
+                // Wrong answer
+                document.getElementById('subStepCalculation').innerHTML = `
+                    <div class="text-lg font-bold text-red-700">❌ Belum tepat. Coba lagi!</div>
+                    <div class="text-sm text-red-600 mt-2">
+                        ${needsBorrow ? 
+                            'Setelah meminjam: ' + (topDigit) + ' - ' + bottomDigit + ' = ?' :
+                            'Hitung: ' + topDigit + ' - ' + bottomDigit + ' = ?'
+                        }
+                    </div>
+                `;
+                document.getElementById('subStepAnswer').value = '';
+                document.getElementById('subStepAnswer').focus();
+            }
+        });
+
+        // Result display update functions
+        function updateAdditionResultDisplay() {
+            let resultStr = '';
+            // Build result from left to right (most significant to least significant)
+            for (let i = 0; i < 6; i++) {
+                if (additionStepData.results[i] !== '_') {
+                    resultStr += additionStepData.results[i];
+                } else {
+                    resultStr += '_';
+                }
+            }
+            
+            // Format with dots for thousands separator (insert dot after 3rd character)
+            let formattedResult = resultStr.substring(0, 3) + '.' + resultStr.substring(3);
+            
+            document.getElementById('stepResult').textContent = formattedResult + ' ';
+        }
+
+        function updateSubtractionResultDisplay() {
+            let resultStr = '';
+            // Build result from left to right (most significant to least significant)
+            for (let i = 0; i < 6; i++) {
+                if (subtractionStepData.results[i] !== '_') {
+                    resultStr += subtractionStepData.results[i];
+                } else {
+                    resultStr += '_';
+                }
+            }
+            
+            // Format with dots for thousands separator (insert dot after 3rd character)
+            let formattedResult = resultStr.substring(0, 3) + '.' + resultStr.substring(3);
+            
+            document.getElementById('subStepResult').textContent = formattedResult + ' ';
+        }
+
+        // Enter key support
+        document.getElementById('additionAnswer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('checkAddition').click();
+            }
+        });
+
+        document.getElementById('stepAnswer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('checkStep').click();
+            }
+        });
+
+        document.getElementById('subtractionAnswer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('checkSubtraction').click();
+            }
+        });
+
+        document.getElementById('subStepAnswer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('checkSubStep').click();
+            }
+        });
+
+        document.getElementById('wordProblemAnswer').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                document.getElementById('checkWordProblem').click();
+            }
+        });
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96e5c4f157419e1e',t:'MTc1NTA2MjQ5MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
