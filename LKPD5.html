@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latihan Soal Bilangan Cacah - Kelas 6 SD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Poppins', sans-serif; }
+        .question-card { transition: all 0.3s ease; }
+        .question-card:hover { transform: translateY(-2px); }
+        .correct { background-color: #dcfce7; border-color: #16a34a; }
+        .incorrect { background-color: #fef2f2; border-color: #dc2626; }
+        .progress-bar { transition: width 0.5s ease; }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-indigo-800 mb-2">🔢 Latihan Soal Bilangan Cacah</h1>
+            <p class="text-lg text-gray-600">Kelas 6 SD • KKM: 70 • Total: 35 Soal</p>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="startScreen" class="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
+            <div class="text-6xl mb-6">📚</div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-4">Selamat Datang!</h2>
+            <p class="text-gray-600 mb-6">Latihan ini mencakup materi bilangan cacah sampai 1.000.000 dengan berbagai format soal:</p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-left">
+                <div class="bg-blue-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-blue-800 mb-2">📝 Format Soal:</h3>
+                    <ul class="text-sm text-blue-700 space-y-1">
+                        <li>• Pilihan Ganda (10 soal)</li>
+                        <li>• Pilihan Ganda Kompleks (8 soal)</li>
+                        <li>• Menjodohkan (7 soal)</li>
+                        <li>• Isian Singkat (6 soal)</li>
+                        <li>• Uraian (4 soal)</li>
+                    </ul>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h3 class="font-semibold text-green-800 mb-2">🎯 Materi:</h3>
+                    <ul class="text-sm text-green-700 space-y-1">
+                        <li>• Membaca & Menulis</li>
+                        <li>• Nilai Tempat</li>
+                        <li>• Membandingkan & Mengurutkan</li>
+                        <li>• Komposisi & Dekomposisi</li>
+                        <li>• Penjumlahan & Pengurangan</li>
+                    </ul>
+                </div>
+            </div>
+            <button onclick="startQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-8 rounded-xl transition-colors duration-300 transform hover:scale-105">
+                🚀 Mulai Latihan
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quizScreen" class="hidden">
+            <!-- Progress Bar -->
+            <div class="max-w-4xl mx-auto mb-6">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-gray-600">Progress</span>
+                    <span class="text-sm font-medium text-gray-600" id="progressText">1 / 35</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-indigo-600 h-3 rounded-full progress-bar" id="progressBar" style="width: 2.86%"></div>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl p-8 question-card">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-sm font-medium" id="questionType">Pilihan Ganda</span>
+                    <span class="text-gray-500 font-medium" id="questionNumber">Soal 1</span>
+                </div>
+                
+                <div id="questionContent" class="mb-8">
+                    <!-- Question content will be inserted here -->
+                </div>
+
+                <div class="flex justify-between">
+                    <button onclick="previousQuestion()" id="prevBtn" class="bg-gray-300 hover:bg-gray-400 text-gray-700 font-medium py-2 px-6 rounded-lg transition-colors duration-300 disabled:opacity-50" disabled>
+                        ← Sebelumnya
+                    </button>
+                    <button onclick="nextQuestion()" id="nextBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300">
+                        Selanjutnya →
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="resultScreen" class="hidden max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 text-center">
+            <div id="resultIcon" class="text-6xl mb-6">🎉</div>
+            <h2 class="text-3xl font-bold mb-4" id="resultTitle">Selamat!</h2>
+            <div class="bg-gray-50 rounded-xl p-6 mb-6">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+                    <div>
+                        <div class="text-2xl font-bold text-indigo-600" id="finalScore">0</div>
+                        <div class="text-sm text-gray-600">Nilai</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-green-600" id="correctCount">0</div>
+                        <div class="text-sm text-gray-600">Benar</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-red-600" id="incorrectCount">0</div>
+                        <div class="text-sm text-gray-600">Salah</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-gray-600" id="timeSpent">0m</div>
+                        <div class="text-sm text-gray-600">Waktu</div>
+                    </div>
+                </div>
+            </div>
+            <div id="kkm-status" class="mb-6 p-4 rounded-lg"></div>
+            <div class="flex gap-4 justify-center">
+                <button onclick="reviewAnswers()" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300">
+                    📋 Review Jawaban
+                </button>
+                <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-6 rounded-lg transition-colors duration-300">
+                    🔄 Ulangi Latihan
+                </button>
+            </div>
+        </div>
+
+        <!-- Review Screen -->
+        <div id="reviewScreen" class="hidden max-w-4xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl p-8 mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">📋 Review Jawaban</h2>
+                <div class="flex gap-4 mb-6">
+                    <button onclick="showResults()" class="bg-gray-600 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300">
+                        ← Kembali ke Hasil
+                    </button>
+                    <button onclick="restartQuiz()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-300">
+                        🔄 Ulangi Latihan
+                    </button>
+                </div>
+            </div>
+            <div id="reviewContent" class="space-y-6">
+                <!-- Review content will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentQuestion = 0;
+        let userAnswers = [];
+        let startTime = Date.now();
+        let questions = [];
+
+        // Generate questions
+        function generateQuestions() {
+            questions = [];
+            
+            // Pilihan Ganda (10 soal)
+            for (let i = 0; i < 10; i++) {
+                questions.push(generateMultipleChoice());
+            }
+            
+            // Pilihan Ganda Kompleks (8 soal)
+            for (let i = 0; i < 8; i++) {
+                questions.push(generateComplexMultipleChoice());
+            }
+            
+            // Menjodohkan (7 soal)
+            for (let i = 0; i < 7; i++) {
+                questions.push(generateMatching());
+            }
+            
+            // Isian Singkat (6 soal)
+            for (let i = 0; i < 6; i++) {
+                questions.push(generateFillInBlank());
+            }
+            
+            // Uraian (4 soal)
+            for (let i = 0; i < 4; i++) {
+                questions.push(generateEssay());
+            }
+            
+            userAnswers = new Array(questions.length).fill(null);
+        }
+
+        function generateMultipleChoice() {
+            const topics = [
+                'reading', 'writing', 'place_value', 'comparing', 'ordering', 
+                'composition', 'decomposition', 'addition', 'subtraction'
+            ];
+            const topic = topics[Math.floor(Math.random() * topics.length)];
+            
+            switch(topic) {
+                case 'reading':
+                    const num1 = Math.floor(Math.random() * 900000) + 100000;
+                    return {
+                        type: 'multiple_choice',
+                        question: `Cara membaca bilangan ${num1.toLocaleString('id-ID')} adalah...`,
+                        options: [
+                            numberToWords(num1),
+                            numberToWords(num1 + 1000),
+                            numberToWords(num1 - 1000),
+                            numberToWords(num1 + 10000)
+                        ],
+                        correct: 0
+                    };
+                    
+                case 'place_value':
+                    // Generate number with unique digits to avoid ambiguity
+                    let num2, digitStr, position, digit;
+                    do {
+                        num2 = Math.floor(Math.random() * 900000) + 100000;
+                        digitStr = num2.toString();
+                        position = Math.floor(Math.random() * 6); // 0-5 for 6 digit number
+                        digit = digitStr[position];
+                    } while (digitStr.split(digit).length > 2); // Ensure digit appears only once
+                    
+                    const positions = ['Satuan', 'Puluhan', 'Ratusan', 'Ribuan', 'Puluhan ribu', 'Ratusan ribu'];
+                    const correctPosition = positions[5 - position]; // Reverse index for place value
+                    
+                    // Create options with correct answer and 3 other positions
+                    const otherPositions = positions.filter(p => p !== correctPosition);
+                    const shuffledOthers = otherPositions.sort(() => Math.random() - 0.5).slice(0, 3);
+                    const options = [correctPosition, ...shuffledOthers].sort(() => Math.random() - 0.5);
+                    const correctIndex = options.indexOf(correctPosition);
+                    
+                    return {
+                        type: 'multiple_choice',
+                        question: `Nilai tempat angka ${digit} pada bilangan ${num2.toLocaleString('id-ID')} adalah...`,
+                        options: options,
+                        correct: correctIndex
+                    };
+                    
+                case 'comparing':
+                    const a = Math.floor(Math.random() * 500000) + 100000;
+                    const b = Math.floor(Math.random() * 500000) + 100000;
+                    const symbol = a > b ? '>' : a < b ? '<' : '=';
+                    return {
+                        type: 'multiple_choice',
+                        question: `Tanda yang tepat untuk ${a.toLocaleString('id-ID')} ... ${b.toLocaleString('id-ID')} adalah...`,
+                        options: ['>', '<', '=', '≠'],
+                        correct: symbol === '>' ? 0 : symbol === '<' ? 1 : 2
+                    };
+                    
+                default:
+                    const num3 = Math.floor(Math.random() * 50000) + 10000;
+                    const num4 = Math.floor(Math.random() * 50000) + 10000;
+                    const sum = num3 + num4;
+                    return {
+                        type: 'multiple_choice',
+                        question: `Hasil dari ${num3.toLocaleString('id-ID')} + ${num4.toLocaleString('id-ID')} adalah...`,
+                        options: [
+                            sum.toLocaleString('id-ID'),
+                            (sum + 1000).toLocaleString('id-ID'),
+                            (sum - 1000).toLocaleString('id-ID'),
+                            (sum + 10000).toLocaleString('id-ID')
+                        ],
+                        correct: 0
+                    };
+            }
+        }
+
+        function generateComplexMultipleChoice() {
+            const num = Math.floor(Math.random() * 900000) + 100000;
+            const statements = [
+                `Bilangan ${num.toLocaleString('id-ID')} terdiri dari ${num.toString().length} digit`,
+                `Angka pada tempat puluhan ribu adalah ${num.toString()[1]}`,
+                `Bilangan ini lebih besar dari ${(num - 50000).toLocaleString('id-ID')}`,
+                `Bilangan ini genap`
+            ];
+            
+            const correct = [
+                true,
+                true,
+                true,
+                num % 2 === 0
+            ];
+            
+            return {
+                type: 'complex_multiple_choice',
+                question: `Perhatikan bilangan ${num.toLocaleString('id-ID')}. Pernyataan yang benar adalah...`,
+                statements: statements,
+                correct: correct
+            };
+        }
+
+        function generateMatching() {
+            const pairs = [
+                { left: '500.000', right: 'Lima ratus ribu' },
+                { left: '750.000', right: 'Tujuh ratus lima puluh ribu' },
+                { left: '250.000', right: 'Dua ratus lima puluh ribu' },
+                { left: '125.000', right: 'Seratus dua puluh lima ribu' }
+            ];
+            
+            return {
+                type: 'matching',
+                question: 'Jodohkan bilangan dengan cara bacanya!',
+                leftItems: pairs.map(p => p.left),
+                rightItems: shuffleArray([...pairs.map(p => p.right)]),
+                correctPairs: pairs
+            };
+        }
+
+        function generateFillInBlank() {
+            const topics = ['decomposition', 'place_value', 'ordering'];
+            const topic = topics[Math.floor(Math.random() * topics.length)];
+            
+            switch(topic) {
+                case 'decomposition':
+                    const num = Math.floor(Math.random() * 900000) + 100000;
+                    const hundreds = Math.floor(num / 100000) * 100000;
+                    const remainder = num - hundreds;
+                    return {
+                        type: 'fill_blank',
+                        question: `${num.toLocaleString('id-ID')} = ${hundreds.toLocaleString('id-ID')} + ____`,
+                        answer: remainder.toString()
+                    };
+                    
+                case 'place_value':
+                    const num2 = Math.floor(Math.random() * 900000) + 100000;
+                    const tensThousands = Math.floor((num2 % 100000) / 10000);
+                    return {
+                        type: 'fill_blank',
+                        question: `Nilai tempat puluhan ribu pada bilangan ${num2.toLocaleString('id-ID')} adalah ____`,
+                        answer: tensThousands.toString()
+                    };
+                    
+                default:
+                    const nums = [234567, 345678, 456789].sort(() => Math.random() - 0.5);
+                    const missing = nums[1];
+                    return {
+                        type: 'fill_blank',
+                        question: `Urutan yang benar: ${nums[0].toLocaleString('id-ID')}, ____, ${nums[2].toLocaleString('id-ID')}`,
+                        answer: missing.toString()
+                    };
+            }
+        }
+
+        function generateEssay() {
+            const scenarios = [
+                {
+                    question: 'Pak Ahmad memiliki 345.678 butir beras. Ia memberikan 123.456 butir kepada tetangganya. Berapa sisa beras Pak Ahmad? Jelaskan cara penghitunganmu!',
+                    answer: '222.222'
+                },
+                {
+                    question: 'Sebuah pabrik memproduksi 456.789 unit barang pada bulan pertama dan 234.567 unit pada bulan kedua. Berapa total produksi selama dua bulan? Tunjukkan langkah penyelesaiannya!',
+                    answer: '691.356'
+                },
+                {
+                    question: 'Urutkan bilangan berikut dari yang terkecil ke terbesar: 567.890, 456.789, 678.901, 345.678. Jelaskan cara kamu mengurutkannya!',
+                    answer: '345.678, 456.789, 567.890, 678.901'
+                },
+                {
+                    question: 'Uraikan bilangan 789.456 ke dalam bentuk penjumlahan berdasarkan nilai tempatnya! Jelaskan setiap langkahnya!',
+                    answer: '700.000 + 80.000 + 9.000 + 400 + 50 + 6'
+                }
+            ];
+            
+            const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+            return {
+                type: 'essay',
+                question: scenario.question,
+                answer: scenario.answer
+            };
+        }
+
+        function numberToWords(num) {
+            const ones = ['', 'satu', 'dua', 'tiga', 'empat', 'lima', 'enam', 'tujuh', 'delapan', 'sembilan'];
+            const teens = ['sepuluh', 'sebelas', 'dua belas', 'tiga belas', 'empat belas', 'lima belas', 'enam belas', 'tujuh belas', 'delapan belas', 'sembilan belas'];
+            const tens = ['', '', 'dua puluh', 'tiga puluh', 'empat puluh', 'lima puluh', 'enam puluh', 'tujuh puluh', 'delapan puluh', 'sembilan puluh'];
+            
+            if (num === 0) return 'nol';
+            
+            let result = '';
+            
+            // Jutaan
+            if (num >= 1000000) {
+                const millions = Math.floor(num / 1000000);
+                result += (millions === 1 ? 'satu' : numberToWords(millions)) + ' juta ';
+                num %= 1000000;
+            }
+            
+            // Ratusan ribu
+            if (num >= 100000) {
+                const hundredThousands = Math.floor(num / 100000);
+                result += ones[hundredThousands] + ' ratus ';
+                num %= 100000;
+            }
+            
+            // Puluhan ribu
+            if (num >= 10000) {
+                const tenThousands = Math.floor(num / 10000);
+                if (tenThousands === 1) {
+                    if (Math.floor((num % 10000) / 1000) === 0) {
+                        result += 'sepuluh ribu ';
+                    } else {
+                        result += 'sepuluh ribu ';
+                    }
+                } else {
+                    result += ones[tenThousands] + ' puluh ';
+                }
+                num %= 10000;
+            }
+            
+            // Ribuan
+            if (num >= 1000) {
+                const thousands = Math.floor(num / 1000);
+                result += (thousands === 1 ? 'seribu' : ones[thousands] + ' ribu') + ' ';
+                num %= 1000;
+            }
+            
+            // Ratusan
+            if (num >= 100) {
+                const hundreds = Math.floor(num / 100);
+                result += (hundreds === 1 ? 'seratus' : ones[hundreds] + ' ratus') + ' ';
+                num %= 100;
+            }
+            
+            // Puluhan dan satuan
+            if (num >= 20) {
+                const tensDigit = Math.floor(num / 10);
+                result += tens[tensDigit] + ' ';
+                num %= 10;
+            } else if (num >= 10) {
+                result += teens[num - 10] + ' ';
+                num = 0;
+            }
+            
+            // Satuan
+            if (num > 0) {
+                result += ones[num] + ' ';
+            }
+            
+            return result.trim();
+        }
+
+        function shuffleArray(array) {
+            const newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
+            }
+            return newArray;
+        }
+
+        function startQuiz() {
+            generateQuestions();
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('quizScreen').classList.remove('hidden');
+            startTime = Date.now();
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const question = questions[currentQuestion];
+            const questionContent = document.getElementById('questionContent');
+            
+            document.getElementById('questionNumber').textContent = `Soal ${currentQuestion + 1}`;
+            document.getElementById('progressText').textContent = `${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('progressBar').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            
+            // Update question type display
+            const typeMap = {
+                'multiple_choice': 'Pilihan Ganda',
+                'complex_multiple_choice': 'Pilihan Ganda Kompleks',
+                'matching': 'Menjodohkan',
+                'fill_blank': 'Isian Singkat',
+                'essay': 'Uraian'
+            };
+            document.getElementById('questionType').textContent = typeMap[question.type];
+            
+            // Generate question content based on type
+            switch(question.type) {
+                case 'multiple_choice':
+                    questionContent.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">${question.question}</h3>
+                        <div class="space-y-3">
+                            ${question.options.map((option, index) => `
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-300 transition-colors duration-200">
+                                    <input type="radio" name="answer" value="${index}" class="mr-3 text-indigo-600" ${userAnswers[currentQuestion] === index ? 'checked' : ''}>
+                                    <span class="text-gray-700">${String.fromCharCode(65 + index)}. ${option}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                    break;
+                    
+                case 'complex_multiple_choice':
+                    questionContent.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">${question.question}</h3>
+                        <div class="space-y-3">
+                            ${question.statements.map((statement, index) => `
+                                <label class="flex items-center p-4 border-2 border-gray-200 rounded-lg cursor-pointer hover:border-indigo-300 transition-colors duration-200">
+                                    <input type="checkbox" name="complex_answer" value="${index}" class="mr-3 text-indigo-600" ${userAnswers[currentQuestion] && userAnswers[currentQuestion].includes(index) ? 'checked' : ''}>
+                                    <span class="text-gray-700">${statement}</span>
+                                </label>
+                            `).join('')}
+                        </div>
+                    `;
+                    break;
+                    
+                case 'matching':
+                    const userMatching = userAnswers[currentQuestion] || {};
+                    questionContent.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">${question.question}</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-3">
+                                <h4 class="font-medium text-gray-700">Kolom A:</h4>
+                                ${question.leftItems.map((item, index) => `
+                                    <div class="p-3 bg-blue-50 rounded-lg border">
+                                        <span class="font-medium">${index + 1}. ${item}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                            <div class="space-y-3">
+                                <h4 class="font-medium text-gray-700">Kolom B:</h4>
+                                ${question.leftItems.map((leftItem, leftIndex) => `
+                                    <select class="w-full p-3 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none" onchange="updateMatching(${leftIndex}, this.value)">
+                                        <option value="">Pilih jawaban...</option>
+                                        ${question.rightItems.map((rightItem, rightIndex) => `
+                                            <option value="${rightIndex}" ${userMatching[leftIndex] == rightIndex ? 'selected' : ''}>${rightItem}</option>
+                                        `).join('')}
+                                    </select>
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'fill_blank':
+                    questionContent.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">${question.question}</h3>
+                        <div class="max-w-md">
+                            <input type="text" class="w-full p-4 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none text-lg" 
+                                   placeholder="Masukkan jawaban..." value="${userAnswers[currentQuestion] || ''}" 
+                                   onchange="updateAnswer(this.value)">
+                        </div>
+                    `;
+                    break;
+                    
+                case 'essay':
+                    questionContent.innerHTML = `
+                        <h3 class="text-xl font-semibold text-gray-800 mb-6">${question.question}</h3>
+                        <div>
+                            <textarea class="w-full p-4 border-2 border-gray-200 rounded-lg focus:border-indigo-500 focus:outline-none h-32 resize-none" 
+                                      placeholder="Tuliskan jawaban dan penjelasan lengkap..." onchange="updateAnswer(this.value)">${userAnswers[currentQuestion] || ''}</textarea>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            // Update navigation buttons
+            document.getElementById('prevBtn').disabled = currentQuestion === 0;
+            document.getElementById('nextBtn').textContent = currentQuestion === questions.length - 1 ? 'Selesai' : 'Selanjutnya →';
+            
+            // Add event listeners for multiple choice
+            if (question.type === 'multiple_choice') {
+                document.querySelectorAll('input[name="answer"]').forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        userAnswers[currentQuestion] = parseInt(e.target.value);
+                    });
+                });
+            }
+            
+            // Add event listeners for complex multiple choice
+            if (question.type === 'complex_multiple_choice') {
+                document.querySelectorAll('input[name="complex_answer"]').forEach(input => {
+                    input.addEventListener('change', (e) => {
+                        if (!userAnswers[currentQuestion]) userAnswers[currentQuestion] = [];
+                        const value = parseInt(e.target.value);
+                        if (e.target.checked) {
+                            if (!userAnswers[currentQuestion].includes(value)) {
+                                userAnswers[currentQuestion].push(value);
+                            }
+                        } else {
+                            userAnswers[currentQuestion] = userAnswers[currentQuestion].filter(v => v !== value);
+                        }
+                    });
+                });
+            }
+        }
+
+        function updateMatching(leftIndex, rightIndex) {
+            if (!userAnswers[currentQuestion]) userAnswers[currentQuestion] = {};
+            userAnswers[currentQuestion][leftIndex] = rightIndex === '' ? null : parseInt(rightIndex);
+        }
+
+        function updateAnswer(value) {
+            userAnswers[currentQuestion] = value;
+        }
+
+        function nextQuestion() {
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                finishQuiz();
+            }
+        }
+
+        function previousQuestion() {
+            if (currentQuestion > 0) {
+                currentQuestion--;
+                showQuestion();
+            }
+        }
+
+        function finishQuiz() {
+            const endTime = Date.now();
+            const timeSpent = Math.round((endTime - startTime) / 60000); // in minutes
+            
+            let correctAnswers = 0;
+            let totalPoints = 0;
+            
+            questions.forEach((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                
+                switch(question.type) {
+                    case 'multiple_choice':
+                        isCorrect = userAnswer === question.correct;
+                        if (isCorrect) totalPoints += 2;
+                        break;
+                        
+                    case 'complex_multiple_choice':
+                        if (userAnswer && Array.isArray(userAnswer)) {
+                            const correctIndices = question.correct.map((correct, i) => correct ? i : -1).filter(i => i !== -1);
+                            isCorrect = correctIndices.length === userAnswer.length && 
+                                       correctIndices.every(i => userAnswer.includes(i));
+                        }
+                        if (isCorrect) totalPoints += 3;
+                        break;
+                        
+                    case 'matching':
+                        if (userAnswer) {
+                            let correctPairs = 0;
+                            question.correctPairs.forEach((pair, pairIndex) => {
+                                const rightIndex = question.rightItems.indexOf(pair.right);
+                                if (userAnswer[pairIndex] == rightIndex) {
+                                    correctPairs++;
+                                }
+                            });
+                            isCorrect = correctPairs === question.correctPairs.length;
+                        }
+                        if (isCorrect) totalPoints += 4;
+                        break;
+                        
+                    case 'fill_blank':
+                        isCorrect = userAnswer && userAnswer.replace(/\D/g, '') === question.answer.replace(/\D/g, '');
+                        if (isCorrect) totalPoints += 3;
+                        break;
+                        
+                    case 'essay':
+                        // Simple keyword matching for essay questions
+                        if (userAnswer) {
+                            const keywords = question.answer.toLowerCase().split(/[\s,]+/);
+                            const userWords = userAnswer.toLowerCase().split(/[\s,]+/);
+                            const matchedKeywords = keywords.filter(keyword => 
+                                userWords.some(word => word.includes(keyword) || keyword.includes(word))
+                            );
+                            isCorrect = matchedKeywords.length >= keywords.length * 0.6; // 60% keyword match
+                        }
+                        if (isCorrect) totalPoints += 5;
+                        break;
+                }
+                
+                if (isCorrect) correctAnswers++;
+            });
+            
+            const maxPoints = (10 * 2) + (8 * 3) + (7 * 4) + (6 * 3) + (4 * 5); // 20 + 24 + 28 + 18 + 20 = 110
+            const finalScore = Math.round((totalPoints / maxPoints) * 100);
+            
+            // Show results
+            document.getElementById('quizScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+            
+            document.getElementById('finalScore').textContent = finalScore;
+            document.getElementById('correctCount').textContent = correctAnswers;
+            document.getElementById('incorrectCount').textContent = questions.length - correctAnswers;
+            document.getElementById('timeSpent').textContent = timeSpent + 'm';
+            
+            const kkm = 70;
+            const kkmStatus = document.getElementById('kkm-status');
+            
+            if (finalScore >= kkm) {
+                document.getElementById('resultIcon').textContent = '🎉';
+                document.getElementById('resultTitle').textContent = 'Selamat! Kamu Lulus!';
+                kkmStatus.className = 'mb-6 p-4 rounded-lg bg-green-100 border border-green-300';
+                kkmStatus.innerHTML = `<div class="text-green-800 font-medium">✅ Nilai kamu ${finalScore} sudah mencapai KKM (${kkm})</div>`;
+            } else {
+                document.getElementById('resultIcon').textContent = '📚';
+                document.getElementById('resultTitle').textContent = 'Tetap Semangat!';
+                kkmStatus.className = 'mb-6 p-4 rounded-lg bg-yellow-100 border border-yellow-300';
+                kkmStatus.innerHTML = `<div class="text-yellow-800 font-medium">📖 Nilai kamu ${finalScore} belum mencapai KKM (${kkm}). Ayo belajar lagi!</div>`;
+            }
+        }
+
+        function reviewAnswers() {
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('reviewScreen').classList.remove('hidden');
+            
+            const reviewContent = document.getElementById('reviewContent');
+            reviewContent.innerHTML = questions.map((question, index) => {
+                const userAnswer = userAnswers[index];
+                let isCorrect = false;
+                let correctAnswerText = '';
+                let userAnswerText = '';
+                
+                switch(question.type) {
+                    case 'multiple_choice':
+                        isCorrect = userAnswer === question.correct;
+                        correctAnswerText = `${String.fromCharCode(65 + question.correct)}. ${question.options[question.correct]}`;
+                        userAnswerText = userAnswer !== null ? `${String.fromCharCode(65 + userAnswer)}. ${question.options[userAnswer]}` : 'Tidak dijawab';
+                        break;
+                        
+                    case 'complex_multiple_choice':
+                        const correctIndices = question.correct.map((correct, i) => correct ? i : -1).filter(i => i !== -1);
+                        if (userAnswer && Array.isArray(userAnswer)) {
+                            isCorrect = correctIndices.length === userAnswer.length && 
+                                       correctIndices.every(i => userAnswer.includes(i));
+                        }
+                        correctAnswerText = correctIndices.map(i => question.statements[i]).join(', ');
+                        userAnswerText = userAnswer && userAnswer.length > 0 ? 
+                            userAnswer.map(i => question.statements[i]).join(', ') : 'Tidak dijawab';
+                        break;
+                        
+                    case 'matching':
+                        if (userAnswer) {
+                            let correctPairs = 0;
+                            question.correctPairs.forEach((pair, pairIndex) => {
+                                const rightIndex = question.rightItems.indexOf(pair.right);
+                                if (userAnswer[pairIndex] == rightIndex) {
+                                    correctPairs++;
+                                }
+                            });
+                            isCorrect = correctPairs === question.correctPairs.length;
+                        }
+                        correctAnswerText = question.correctPairs.map(pair => `${pair.left} → ${pair.right}`).join(', ');
+                        userAnswerText = userAnswer ? 
+                            Object.entries(userAnswer).map(([left, right]) => 
+                                `${question.leftItems[left]} → ${question.rightItems[right] || 'Tidak dipilih'}`
+                            ).join(', ') : 'Tidak dijawab';
+                        break;
+                        
+                    case 'fill_blank':
+                        isCorrect = userAnswer && userAnswer.replace(/\D/g, '') === question.answer.replace(/\D/g, '');
+                        correctAnswerText = question.answer;
+                        userAnswerText = userAnswer || 'Tidak dijawab';
+                        break;
+                        
+                    case 'essay':
+                        if (userAnswer) {
+                            const keywords = question.answer.toLowerCase().split(/[\s,]+/);
+                            const userWords = userAnswer.toLowerCase().split(/[\s,]+/);
+                            const matchedKeywords = keywords.filter(keyword => 
+                                userWords.some(word => word.includes(keyword) || keyword.includes(word))
+                            );
+                            isCorrect = matchedKeywords.length >= keywords.length * 0.6;
+                        }
+                        correctAnswerText = question.answer;
+                        userAnswerText = userAnswer || 'Tidak dijawab';
+                        break;
+                }
+                
+                return `
+                    <div class="bg-white rounded-xl shadow-lg p-6 ${isCorrect ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'}">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-lg font-semibold text-gray-800">Soal ${index + 1}</h3>
+                            <span class="px-3 py-1 rounded-full text-sm font-medium ${isCorrect ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                                ${isCorrect ? '✅ Benar' : '❌ Salah'}
+                            </span>
+                        </div>
+                        <p class="text-gray-700 mb-4">${question.question}</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="bg-green-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-green-800 mb-2">Jawaban Benar:</h4>
+                                <p class="text-green-700">${correctAnswerText}</p>
+                            </div>
+                            <div class="bg-gray-50 p-4 rounded-lg">
+                                <h4 class="font-medium text-gray-800 mb-2">Jawaban Kamu:</h4>
+                                <p class="text-gray-700">${userAnswerText}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function showResults() {
+            document.getElementById('reviewScreen').classList.add('hidden');
+            document.getElementById('resultScreen').classList.remove('hidden');
+        }
+
+        function restartQuiz() {
+            currentQuestion = 0;
+            userAnswers = [];
+            document.getElementById('resultScreen').classList.add('hidden');
+            document.getElementById('reviewScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+        }
+    </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'96e5bcb946503f67',t:'MTc1NTA2MjE1My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
